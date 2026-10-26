@@ -32,6 +32,13 @@ export async function createTestUser(nickname = "테스트회원"): Promise<Test
   return { id: data.user.id, email, password };
 }
 
+/** 승인된 일반 멤버. 최초 가입자는 매니저가 되므로 호출 순서에 주의한다. */
+export async function createApprovedMember(nickname = "멤버"): Promise<TestUser> {
+  const user = await createTestUser(nickname);
+  await approveUser(user);
+  return user;
+}
+
 export async function deleteTestUser(user: TestUser) {
   await admin().auth.admin.deleteUser(user.id);
 }
@@ -40,6 +47,8 @@ export async function deleteTestUser(user: TestUser) {
 export async function resetDatabase() {
   const db = admin();
   const NIL = "00000000-0000-0000-0000-000000000000";
+  const { error: voteError } = await db.from("round_votes").delete().neq("round_id", NIL);
+  if (voteError) throw voteError;
   const { error: noticeError } = await db.from("notices").delete().neq("id", NIL);
   if (noticeError) throw noticeError;
   const { error: roundError } = await db.from("rounds").delete().neq("id", NIL);
@@ -84,14 +93,39 @@ export async function seedRound(input: {
   startsAt: Date;
   location?: string;
   fee?: number;
-}) {
-  const { error } = await admin()
+  capacity?: number | null;
+  status?: "scheduled" | "cancelled";
+}): Promise<string> {
+  const { data, error } = await admin()
     .from("rounds")
     .insert({
       kind: input.kind ?? "screen",
       starts_at: input.startsAt.toISOString(),
       location: input.location ?? "테스트 스크린골프장",
       fee: input.fee ?? 25000,
+      capacity: input.capacity ?? null,
+      status: input.status ?? "scheduled",
+    })
+    .select("id")
+    .single();
+  if (error) throw error;
+  return data.id as string;
+}
+
+/** 서비스 롤로 투표를 직접 심는다 (투표 UI/RPC 가 대상이 아닌 테스트용). */
+export async function seedVote(input: {
+  roundId: string;
+  memberId: string;
+  status: "attending" | "waiting" | "declined";
+  requestedAt?: Date;
+}) {
+  const { error } = await admin()
+    .from("round_votes")
+    .insert({
+      round_id: input.roundId,
+      member_id: input.memberId,
+      status: input.status,
+      requested_at: (input.requestedAt ?? new Date()).toISOString(),
     });
   if (error) throw error;
 }

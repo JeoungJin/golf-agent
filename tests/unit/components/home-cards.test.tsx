@@ -12,7 +12,10 @@ const round: Round = {
   startsAt: "2026-10-31T04:30:00Z",
   location: "레이크사이드 CC",
   fee: 180000,
+  capacity: null,
+  status: "scheduled",
   createdAt: "2026-10-01T00:00:00Z",
+  updatedAt: "2026-10-01T00:00:00Z",
 };
 
 const notice: Notice = {

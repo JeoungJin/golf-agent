@@ -10,7 +10,10 @@ const round = (id: string, startsAt: string, createdAt = "2026-10-01T00:00:00Z")
   startsAt,
   location: "장소",
   fee: 0,
+  capacity: null,
+  status: "scheduled",
   createdAt,
+  updatedAt: createdAt,
 });
 
 describe("pickNextRound", () => {

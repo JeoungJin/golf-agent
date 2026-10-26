@@ -28,11 +28,11 @@ description: "Task list for 라운딩 일정 관리 · 참석 투표"
 
 **Purpose**: 스키마 기반, 도메인 타입, 테스트 헬퍼. 이 단계가 끝나기 전에는 스토리 작업을 시작할 수 없다.
 
-- [ ] T001 pgTAP 스키마 테스트 먼저 작성(Red 확인): `rounds`에 `capacity`(null 허용, `>= 1`)·`status`(기본 `scheduled`)·`updated_at` 컬럼, `location` 길이 1..100·공백만 불가 제약, `round_votes`(PK `(round_id, member_id)`, `status`/`requested_at` not null), `round_votes` RLS(승인된 회원만 SELECT, 승인 대기·거절·anon 0건/거부), `authenticated`의 `round_votes`·`rounds` INSERT/UPDATE/DELETE 권한 없음 — `supabase/tests/50_round_schema.sql`
-- [ ] T002 스키마 마이그레이션: enum `round_status(scheduled, cancelled)`, `vote_status(attending, waiting, declined)`, `vote_choice(attend, decline)`; `rounds` 컬럼 추가 및 location 제약(data-model.md 그대로); `round_votes` 테이블 + 인덱스 `(round_id, status, requested_at)`; RLS 활성화, `round_votes_select_approved` 정책, `authenticated`의 쓰기 권한 revoke — `supabase/migrations/0007_rounds_schema.sql` (T001 통과)
-- [ ] T003 [P] 도메인 타입 확장: `Round`에 `capacity: number | null`, `status`, `updatedAt` 추가, `VoteStatus`, `Vote`, `RosterEntry` 정의. 기존 타입 사용처(`src/lib/queries.ts`의 `toRound`, 테스트 픽스처)를 함께 맞춰 `npx tsc --noEmit` 통과 — `src/domain/types.ts`, `src/lib/queries.ts`, `tests/unit/**`
-- [ ] T004 [P] E2E 헬퍼 확장: `seedRound`에 `capacity`·`status` 옵션, 서비스 롤로 투표를 직접 심는 `seedVote`, 승인된 멤버를 만드는 `createApprovedMember`, 매니저/멤버 컨텍스트 생성 헬퍼 — `tests/e2e/helpers/session.ts`
-- [ ] T005 기반 확인: `npx supabase db reset` 후 `npm run test:db`, `npm run check`, `npm run test:e2e`가 기존 테스트와 함께 모두 통과
+- [X] T001 pgTAP 스키마 테스트 먼저 작성(Red 확인): `rounds`에 `capacity`(null 허용, `>= 1`)·`status`(기본 `scheduled`)·`updated_at` 컬럼, `location` 길이 1..100·공백만 불가 제약, `round_votes`(PK `(round_id, member_id)`, `status`/`requested_at` not null), `round_votes` RLS(승인된 회원만 SELECT, 승인 대기·거절·anon 0건/거부), `authenticated`의 `round_votes`·`rounds` INSERT/UPDATE/DELETE 권한 없음 — `supabase/tests/50_round_schema.sql`
+- [X] T002 스키마 마이그레이션: enum `round_status(scheduled, cancelled)`, `vote_status(attending, waiting, declined)`, `vote_choice(attend, decline)`; `rounds` 컬럼 추가 및 location 제약(data-model.md 그대로); `round_votes` 테이블 + 인덱스 `(round_id, status, requested_at)`; RLS 활성화, `round_votes_select_approved` 정책, `authenticated`의 쓰기 권한 revoke — `supabase/migrations/0007_rounds_schema.sql` (T001 통과)
+- [X] T003 [P] 도메인 타입 확장: `Round`에 `capacity: number | null`, `status`, `updatedAt` 추가, `VoteStatus`, `Vote`, `RosterEntry` 정의. 기존 타입 사용처(`src/lib/queries.ts`의 `toRound`, 테스트 픽스처)를 함께 맞춰 `npx tsc --noEmit` 통과 — `src/domain/types.ts`, `src/lib/queries.ts`, `tests/unit/**`
+- [X] T004 [P] E2E 헬퍼 확장: `seedRound`에 `capacity`·`status` 옵션, 서비스 롤로 투표를 직접 심는 `seedVote`, 승인된 멤버를 만드는 `createApprovedMember`, 매니저/멤버 컨텍스트 생성 헬퍼 — `tests/e2e/helpers/session.ts`
+- [X] T005 기반 확인: `npx supabase db reset` 후 `npm run test:db`, `npm run check`, `npm run test:e2e`가 기존 테스트와 함께 모두 통과
 
 **Checkpoint**: 기반 준비 완료
 

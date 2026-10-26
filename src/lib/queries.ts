@@ -8,7 +8,10 @@ interface RoundRow {
   starts_at: string;
   location: string;
   fee: number;
+  capacity: number | null;
+  status: Round["status"];
   created_at: string;
+  updated_at: string;
 }
 
 interface NoticeRow {
@@ -20,13 +23,18 @@ interface NoticeRow {
   updated_at: string;
 }
 
+const ROUND_COLUMNS = "id, kind, starts_at, location, fee, capacity, status, created_at, updated_at";
+
 const toRound = (r: RoundRow): Round => ({
   id: r.id,
   kind: r.kind,
   startsAt: r.starts_at,
   location: r.location,
   fee: r.fee,
+  capacity: r.capacity,
+  status: r.status,
   createdAt: r.created_at,
+  updatedAt: r.updated_at,
 });
 
 export const toNotice = (n: NoticeRow): Notice => ({
@@ -47,7 +55,7 @@ export async function fetchHomeData(supabase: SupabaseClient, now = new Date()):
   const [rounds, notice] = await Promise.all([
     supabase
       .from("rounds")
-      .select("id, kind, starts_at, location, fee, created_at")
+      .select(ROUND_COLUMNS)
       .gt("starts_at", now.toISOString())
       .order("starts_at", { ascending: true })
       .limit(20),
