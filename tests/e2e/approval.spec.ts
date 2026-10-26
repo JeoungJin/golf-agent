@@ -72,13 +72,13 @@ test("일반 멤버는 가입 신청 관리 화면에 접근할 수 없고 링�
   await managerPage.getByRole("button", { name: "승인" }).click();
   await expect(managerPage.getByText("대기 중인 신청이 없습니다")).toBeVisible();
   await managerPage.goto("/");
-  await expect(managerPage.getByRole("link", { name: "가입 신청" })).toBeVisible();
+  await expect(managerPage.getByRole("link", { name: "가입신청 목록" })).toBeVisible();
 
   const memberCtx = await browser.newContext();
   await signInAs(memberCtx, member);
   const memberPage = await memberCtx.newPage();
   await memberPage.goto("/");
-  await expect(memberPage.getByRole("link", { name: "가입 신청" })).toHaveCount(0);
+  await expect(memberPage.getByRole("link", { name: "가입신청 목록" })).toHaveCount(0);
   await memberPage.goto("/admin/members");
   await expect(memberPage).toHaveURL(/\/$/);
 

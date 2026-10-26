@@ -27,7 +27,7 @@ export default async function AdminMembersPage() {
 
   return (
     <main className="py-2">
-      <h1 className="mb-2 text-lg font-bold">가입 신청</h1>
+      <h1 className="mb-2 text-lg font-bold">가입신청 목록</h1>
       <PendingMemberList members={members} onApprove={approveMember} onReject={rejectMember} />
     </main>
   );

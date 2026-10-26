@@ -41,12 +41,20 @@ describe("NextRoundCard", () => {
     expect(screen.getByText("예정된 라운딩이 없습니다")).toBeInTheDocument();
   });
 
-  it("'라운딩 목록' 버튼으로 전체 라운딩 목록에 이동할 수 있다 (라운딩이 없어도)", () => {
+  it("'스크린 목록'·'필드 목록' 버튼으로 종류별 목록에 이동할 수 있다 (라운딩이 없어도)", () => {
     const { unmount } = render(<NextRoundCard round={round} />);
-    expect(screen.getByRole("link", { name: "라운딩 목록" })).toHaveAttribute("href", "/rounds");
+    expect(screen.getByRole("link", { name: "스크린 목록" })).toHaveAttribute(
+      "href",
+      "/rounds?kind=screen",
+    );
+    expect(screen.getByRole("link", { name: "필드 목록" })).toHaveAttribute(
+      "href",
+      "/rounds?kind=field",
+    );
     unmount();
     render(<NextRoundCard round={null} />);
-    expect(screen.getByRole("link", { name: "라운딩 목록" })).toHaveAttribute("href", "/rounds");
+    expect(screen.getByRole("link", { name: "스크린 목록" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "필드 목록" })).toBeInTheDocument();
   });
 });
 

@@ -1,6 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { pickNextRound } from "@/domain/next-round";
-import type { Notice, Round, Vote } from "@/domain/types";
+import type { Notice, Round, RoundKind, Vote } from "@/domain/types";
 
 interface RoundRow {
   id: string;
@@ -129,17 +129,21 @@ export async function fetchVotes(supabase: SupabaseClient, roundIds: string[]): 
 }
 
 /** 라운딩 목록: 예정(티오프 빠른 순, 취소 포함)과 지난 최근 10건, 그리고 그 투표. */
-export async function fetchRoundList(supabase: SupabaseClient, now = new Date()): Promise<RoundListData> {
+export async function fetchRoundList(
+  supabase: SupabaseClient,
+  now = new Date(),
+  kind: RoundKind | null = null,
+): Promise<RoundListData> {
+  const base = () => {
+    const q = supabase.from("rounds").select(ROUND_COLUMNS);
+    return kind ? q.eq("kind", kind) : q;
+  };
   const [upcoming, past] = await Promise.all([
-    supabase
-      .from("rounds")
-      .select(ROUND_COLUMNS)
+    base()
       .gt("starts_at", now.toISOString())
       .order("starts_at", { ascending: true })
       .order("created_at", { ascending: true }),
-    supabase
-      .from("rounds")
-      .select(ROUND_COLUMNS)
+    base()
       .lte("starts_at", now.toISOString())
       .order("starts_at", { ascending: false })
       .limit(PAST_ROUNDS_LIMIT),

@@ -35,7 +35,7 @@ export function Header({ nickname, isManager = false }: { nickname: string; isMa
             href="/admin/members"
             className="rounded-full border border-green-700 px-3 py-1 text-xs font-medium text-green-700"
           >
-            가입 신청
+            가입신청 목록
           </Link>
         )}
         <LogoutButton />

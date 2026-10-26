@@ -141,6 +141,42 @@ test.describe("라운딩 목록·상세 (US2)", () => {
     await expect(past.nth(9)).toContainText("지난 장소 10");
   });
 
+  test("스크린/필드 탭으로 종류별 목록을 구분해 볼 수 있다", async ({ page, context }) => {
+    const manager = await createTestUser("매니저");
+    await seedRound({ kind: "screen", startsAt: daysFromNow(1), location: "스크린 장소 A" });
+    await seedRound({ kind: "field", startsAt: daysFromNow(2), location: "필드 장소 B" });
+    await seedRound({ kind: "screen", startsAt: daysFromNow(-1), location: "지난 스크린 C" });
+    await seedRound({ kind: "field", startsAt: daysFromNow(-2), location: "지난 필드 D" });
+    await signInAs(context, manager);
+
+    await page.goto("/rounds");
+    await expect(page.getByRole("listitem")).toHaveCount(4);
+
+    await page.getByRole("link", { name: "필드", exact: true }).click();
+    await expect(page).toHaveURL(/\/rounds\?kind=field$/);
+    await expect(page.getByRole("heading", { name: "필드 라운딩" })).toBeVisible();
+    await expect(page.getByText("필드 장소 B")).toBeVisible();
+    await expect(page.getByText("지난 필드 D")).toBeVisible();
+    await expect(page.getByText("스크린 장소 A")).toHaveCount(0);
+
+    await page.getByRole("link", { name: "스크린", exact: true }).click();
+    await expect(page).toHaveURL(/\/rounds\?kind=screen$/);
+    await expect(page.getByText("스크린 장소 A")).toBeVisible();
+    await expect(page.getByText("필드 장소 B")).toHaveCount(0);
+
+    await page.getByRole("link", { name: "전체", exact: true }).click();
+    await expect(page.getByRole("listitem")).toHaveCount(4);
+  });
+
+  test("해당 종류의 라운딩이 없으면 종류별 빈 상태 안내가 보인다", async ({ page, context }) => {
+    const manager = await createTestUser("매니저");
+    await seedRound({ kind: "screen", startsAt: daysFromNow(1), location: "스크린뿐" });
+    await signInAs(context, manager);
+
+    await page.goto("/rounds?kind=field");
+    await expect(page.getByText("등록된 필드 라운딩이 없습니다")).toBeVisible();
+  });
+
   test("라운딩이 없으면 빈 상태 안내가 보인다", async ({ page, context }) => {
     const manager = await createTestUser("매니저");
     await signInAs(context, manager);
@@ -195,8 +231,8 @@ test.describe("라운딩 목록·상세 (US2)", () => {
     await signInAs(managerCtx, manager);
     const managerPage = await managerCtx.newPage();
     await managerPage.goto("/");
-    await managerPage.getByRole("link", { name: "라운딩 목록" }).click();
-    await expect(managerPage).toHaveURL(/\/rounds$/);
+    await managerPage.getByRole("link", { name: "스크린 목록" }).click();
+    await expect(managerPage).toHaveURL(/\/rounds\?kind=screen$/);
     await expect(managerPage.getByRole("link", { name: "라운딩 등록" })).toBeVisible();
 
     const memberCtx = await browser.newContext();

@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { RefreshRetry } from "@/components/ErrorRetry";
 import { RoundListItem } from "@/components/RoundListItem";
+import { roundKindLabel } from "@/domain/format";
+import { parseKindFilter } from "@/domain/round-filter";
 import type { Round, Vote } from "@/domain/types";
 import { getCurrentMember } from "@/lib/members";
 import { fetchRoundList } from "@/lib/queries";
@@ -40,9 +42,24 @@ function Section({
   );
 }
 
-export default async function RoundsPage() {
+const TABS = [
+  { label: "전체", href: "/rounds", kind: null },
+  { label: "스크린", href: "/rounds?kind=screen", kind: "screen" },
+  { label: "필드", href: "/rounds?kind=field", kind: "field" },
+] as const;
+
+export default async function RoundsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ kind?: string | string[] }>;
+}) {
+  const kind = parseKindFilter((await searchParams).kind);
   const supabase = await createClient();
-  const [data, member] = await Promise.all([fetchRoundList(supabase), getCurrentMember()]);
+  const [data, member] = await Promise.all([
+    fetchRoundList(supabase, new Date(), kind),
+    getCurrentMember(),
+  ]);
+  const prefix = kind ? `${roundKindLabel(kind)} ` : "";
 
   return (
     <main className="space-y-4 py-2">
@@ -59,12 +76,26 @@ export default async function RoundsPage() {
           </Link>
         )}
       </div>
-      <h1 className="text-lg font-bold">라운딩</h1>
+      <h1 className="text-lg font-bold">{prefix}라운딩</h1>
+      <nav aria-label="종류" className="flex gap-2">
+        {TABS.map((tab) => (
+          <Link
+            key={tab.label}
+            href={tab.href}
+            aria-current={tab.kind === kind ? "page" : undefined}
+            className={`rounded-full px-4 py-1.5 text-sm font-medium ${
+              tab.kind === kind ? "bg-green-700 text-white" : "border border-neutral-300 text-neutral-700"
+            }`}
+          >
+            {tab.label}
+          </Link>
+        ))}
+      </nav>
 
       {!data.ok ? (
         <RefreshRetry />
       ) : data.upcoming.length === 0 && data.past.length === 0 ? (
-        <p className="text-neutral-500">등록된 라운딩이 없습니다</p>
+        <p className="text-neutral-500">등록된 {prefix}라운딩이 없습니다</p>
       ) : (
         <>
           <Section
