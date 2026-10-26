@@ -73,18 +73,18 @@ description: "Task list for 라운딩 일정 관리 · 참석 투표"
 
 ### Tests for User Story 2 (먼저 작성하고 Red 확인)
 
-- [ ] T017 [P] [US2] 단위 테스트 `format` 확장: 정원 표기(`formatCapacity` — 정원 있으면 "N/정원", 없으면 "N명"), 라운딩 상태 라벨 — `tests/unit/domain/format.test.ts`
-- [ ] T018 [P] [US2] 컴포넌트 테스트 `RoundListItem`: 종류·일시·장소·비용·참석 인원 표시, 취소됨 배지, 상세 링크 — `tests/unit/components/round-list-item.test.tsx`
-- [ ] T019 [US2] Playwright E2E: 목록 구역·정렬(예정 빠른 순, 지난 최근 순 최대 10건), 취소됨 표시, 빈 상태, 상세 표시, 승인 대기 사용자 접근 거부, 360px 가로 스크롤 없음 — `tests/e2e/rounds.spec.ts`
+- [X] T017 [P] [US2] 단위 테스트 `format` 확장: 정원 표기(`formatCapacity` — 정원 있으면 "N/정원", 없으면 "N명"), 라운딩 상태 라벨 — `tests/unit/domain/format.test.ts`
+- [X] T018 [P] [US2] 컴포넌트 테스트 `RoundListItem`: 종류·일시·장소·비용·참석 인원 표시, 취소됨 배지, 상세 링크 — `tests/unit/components/round-list-item.test.tsx`
+- [X] T019 [US2] Playwright E2E: 목록 구역·정렬(예정 빠른 순, 지난 최근 순 최대 10건), 취소됨 표시, 빈 상태, 상세 표시, 승인 대기 사용자 접근 거부, 360px 가로 스크롤 없음 — `tests/e2e/rounds.spec.ts`
 
 ### Implementation for User Story 2
 
-- [ ] T020 [P] [US2] `src/domain/format.ts` 확장 (T017 통과)
-- [ ] T021 [US2] `src/lib/queries.ts`에 예정/지난(10건) 라운딩 조회, 단건 조회, 투표 조회 추가(`fetchRounds`, `fetchRound`, `fetchVotes`)
-- [ ] T022 [US2] `RoundListItem` 컴포넌트 (T018 통과) — `src/components/RoundListItem.tsx`
-- [ ] T023 [US2] `/rounds` 목록 페이지(매니저에게는 "라운딩 등록" 버튼, 오류 시 `RefreshRetry`)와 `/rounds/[id]` 상세 페이지(기본 정보만, 404 처리) — `src/app/(member)/rounds/page.tsx`, `src/app/(member)/rounds/[id]/page.tsx`
-- [ ] T024 [US2] 홈과 헤더에서 `/rounds`로 가는 "라운딩" 링크 추가 — `src/components/Header.tsx`, `src/app/(member)/page.tsx`
-- [ ] T025 [US2] T017–T019 통과 확인
+- [X] T020 [P] [US2] `src/domain/format.ts` 확장 (T017 통과)
+- [X] T021 [US2] `src/lib/queries.ts`에 예정/지난(10건) 라운딩 조회, 단건 조회, 투표 조회 추가(`fetchRounds`, `fetchRound`, `fetchVotes`)
+- [X] T022 [US2] `RoundListItem` 컴포넌트 (T018 통과) — `src/components/RoundListItem.tsx`
+- [X] T023 [US2] `/rounds` 목록 페이지(매니저에게는 "라운딩 등록" 버튼, 오류 시 `RefreshRetry`)와 `/rounds/[id]` 상세 페이지(기본 정보만, 404 처리) — `src/app/(member)/rounds/page.tsx`, `src/app/(member)/rounds/[id]/page.tsx`
+- [X] T024 [US2] 홈과 헤더에서 `/rounds`로 가는 "라운딩" 링크 추가 — `src/components/Header.tsx`, `src/app/(member)/page.tsx`
+- [X] T025 [US2] T017–T019 통과 확인
 
 **Checkpoint**: 등록 + 조회가 동작
 

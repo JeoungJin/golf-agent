@@ -1,10 +1,19 @@
+import Link from "next/link";
 import { formatFee, formatRoundDateTime, roundKindLabel } from "@/domain/format";
 import type { Round } from "@/domain/types";
 
 export function NextRoundCard({ round }: { round: Round | null }) {
   return (
     <section className="rounded-2xl bg-green-50 p-4">
-      <h2 className="text-sm font-semibold text-green-800">다음 라운딩</h2>
+      <div className="flex items-center justify-between">
+        <h2 className="text-sm font-semibold text-green-800">다음 라운딩</h2>
+        <Link
+          href="/rounds"
+          className="rounded-full border border-green-700 px-3 py-1 text-xs font-medium text-green-800"
+        >
+          라운딩 목록
+        </Link>
+      </div>
       {round ? (
         <div className="mt-3 space-y-1">
           <p>

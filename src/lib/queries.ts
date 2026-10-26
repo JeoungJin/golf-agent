@@ -1,6 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { pickNextRound } from "@/domain/next-round";
-import type { Notice, Round } from "@/domain/types";
+import type { Notice, Round, Vote } from "@/domain/types";
 
 interface RoundRow {
   id: string;
@@ -95,4 +95,67 @@ export async function fetchNotices(supabase: SupabaseClient): Promise<Notice[] |
     .limit(100);
   if (error) return null;
   return (data as NoticeRow[]).map(toNotice);
+}
+
+export const PAST_ROUNDS_LIMIT = 10;
+
+export type RoundListData =
+  | { ok: true; upcoming: Round[]; past: Round[]; votes: Vote[] }
+  | { ok: false };
+
+interface VoteRow {
+  round_id: string;
+  member_id: string;
+  status: Vote["status"];
+  requested_at: string;
+}
+
+const toVote = (v: VoteRow): Vote => ({
+  roundId: v.round_id,
+  memberId: v.member_id,
+  status: v.status,
+  requestedAt: v.requested_at,
+});
+
+/** 지정한 라운딩들의 투표를 조회한다. 실패하면 null. */
+export async function fetchVotes(supabase: SupabaseClient, roundIds: string[]): Promise<Vote[] | null> {
+  if (roundIds.length === 0) return [];
+  const { data, error } = await supabase
+    .from("round_votes")
+    .select("round_id, member_id, status, requested_at")
+    .in("round_id", roundIds);
+  if (error) return null;
+  return (data as VoteRow[]).map(toVote);
+}
+
+/** 라운딩 목록: 예정(티오프 빠른 순, 취소 포함)과 지난 최근 10건, 그리고 그 투표. */
+export async function fetchRoundList(supabase: SupabaseClient, now = new Date()): Promise<RoundListData> {
+  const [upcoming, past] = await Promise.all([
+    supabase
+      .from("rounds")
+      .select(ROUND_COLUMNS)
+      .gt("starts_at", now.toISOString())
+      .order("starts_at", { ascending: true })
+      .order("created_at", { ascending: true }),
+    supabase
+      .from("rounds")
+      .select(ROUND_COLUMNS)
+      .lte("starts_at", now.toISOString())
+      .order("starts_at", { ascending: false })
+      .limit(PAST_ROUNDS_LIMIT),
+  ]);
+  if (upcoming.error || past.error) return { ok: false };
+
+  const upcomingRounds = (upcoming.data as RoundRow[]).map(toRound);
+  const pastRounds = (past.data as RoundRow[]).map(toRound);
+  const votes = await fetchVotes(supabase, [...upcomingRounds, ...pastRounds].map((r) => r.id));
+  if (votes === null) return { ok: false };
+
+  return { ok: true, upcoming: upcomingRounds, past: pastRounds, votes };
+}
+
+export async function fetchRound(supabase: SupabaseClient, id: string): Promise<Round | null> {
+  const { data, error } = await supabase.from("rounds").select(ROUND_COLUMNS).eq("id", id).maybeSingle();
+  if (error || !data) return null;
+  return toRound(data as RoundRow);
 }

@@ -40,6 +40,14 @@ describe("NextRoundCard", () => {
     render(<NextRoundCard round={null} />);
     expect(screen.getByText("예정된 라운딩이 없습니다")).toBeInTheDocument();
   });
+
+  it("'라운딩 목록' 버튼으로 전체 라운딩 목록에 이동할 수 있다 (라운딩이 없어도)", () => {
+    const { unmount } = render(<NextRoundCard round={round} />);
+    expect(screen.getByRole("link", { name: "라운딩 목록" })).toHaveAttribute("href", "/rounds");
+    unmount();
+    render(<NextRoundCard round={null} />);
+    expect(screen.getByRole("link", { name: "라운딩 목록" })).toHaveAttribute("href", "/rounds");
+  });
 });
 
 describe("NoticeCard", () => {

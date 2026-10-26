@@ -1,5 +1,30 @@
 import { describe, expect, it } from "vitest";
-import { formatFee, formatRoundDateTime, roundKindLabel } from "@/domain/format";
+import {
+  formatCapacity,
+  formatFee,
+  formatRoundDateTime,
+  roundKindLabel,
+  roundStatusLabel,
+} from "@/domain/format";
+
+describe("formatCapacity", () => {
+  it("정원이 있으면 'N/정원명' 으로 표기한다", () => {
+    expect(formatCapacity(3, 8)).toBe("3/8명");
+    expect(formatCapacity(0, 4)).toBe("0/4명");
+  });
+
+  it("정원이 없으면 'N명' 으로 표기한다", () => {
+    expect(formatCapacity(5, null)).toBe("5명");
+    expect(formatCapacity(0, null)).toBe("0명");
+  });
+});
+
+describe("roundStatusLabel", () => {
+  it("취소된 라운딩만 라벨을 돌려준다", () => {
+    expect(roundStatusLabel("cancelled")).toBe("취소됨");
+    expect(roundStatusLabel("scheduled")).toBeNull();
+  });
+});
 
 describe("formatRoundDateTime", () => {
   it("KST 기준 오후 시각을 표기한다", () => {

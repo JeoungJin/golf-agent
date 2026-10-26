@@ -1,4 +1,4 @@
-import type { RoundKind } from "./types";
+import type { RoundKind, RoundStatus } from "./types";
 
 const TIME_ZONE = "Asia/Seoul";
 
@@ -32,4 +32,14 @@ const KIND_LABELS: Record<RoundKind, string> = {
 
 export function roundKindLabel(kind: RoundKind): string {
   return KIND_LABELS[kind];
+}
+
+/** 정원이 있으면 "3/8명", 없으면 "3명" */
+export function formatCapacity(count: number, capacity: number | null): string {
+  return capacity === null ? `${count}명` : `${count}/${capacity}명`;
+}
+
+/** 취소된 라운딩만 "취소됨" 라벨을 돌려준다. */
+export function roundStatusLabel(status: RoundStatus): string | null {
+  return status === "cancelled" ? "취소됨" : null;
 }
