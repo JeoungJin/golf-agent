@@ -1,14 +1,23 @@
+import { RefreshRetry } from "@/components/ErrorRetry";
 import { PendingMemberList } from "@/components/PendingMemberList";
 import { createClient } from "@/lib/supabase/server";
 import { approveMember, rejectMember } from "./actions";
 
 export default async function AdminMembersPage() {
   const supabase = await createClient();
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from("members")
     .select("id, nickname, created_at")
     .eq("status", "pending")
     .order("created_at", { ascending: true });
+
+  if (error) {
+    return (
+      <main className="py-2">
+        <RefreshRetry />
+      </main>
+    );
+  }
 
   const members = (data ?? []).map((m) => ({
     id: m.id,

@@ -11,7 +11,8 @@
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
     "test:e2e": "playwright test",
-    "test:db": "supabase test db"
+    "test:db": "supabase test db",
+    "check": "npm run lint && npm run typecheck && npm run test"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",

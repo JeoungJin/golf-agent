@@ -195,12 +195,12 @@ description: "Task list for 카카오 로그인 · 홈 화면 추가 안내 · �
 
 ## Phase 8: Polish & Cross-Cutting
 
-- [ ] T072 [P] `src/domain/` 단위 테스트 커버리지 측정(Vitest coverage) 및 100% 미달 파일 보강 (Constitution II) — `vitest.config.ts`
-- [ ] T073 [P] 360px·414px 뷰포트에서 모든 화면 가로 스크롤/잘림 점검 및 수정 — `tests/e2e/layout.spec.ts`
-- [ ] T074 [P] 네트워크 오류 시 홈·승인 목록의 오류 안내와 재시도 동작 점검 (FR-014)
-- [ ] T075 [P] 린트·타입 체크(`npm run lint`, `npx tsc --noEmit`)를 통과시키고 `package.json`에 `npm run check`(lint+tsc+test) 스크립트 추가
-- [ ] T076 보안 점검: 클라이언트 번들에 서비스 롤 키 미포함, `.env.local` 미커밋, 모든 테이블 RLS 활성 확인 (Constitution V, VI)
-- [ ] T077 배포: Supabase 프로젝트 생성·마이그레이션 적용(`npx supabase db push`), 카카오 개발자 콘솔 Redirect URI와 Supabase Auth 설정, Vercel 환경변수 등록 및 배포 — `README.md`에 절차 기록
+- [X] T072 [P] `src/domain/` 단위 테스트 커버리지 측정(Vitest coverage) 및 100% 미달 파일 보강 (Constitution II) — `vitest.config.ts`
+- [X] T073 [P] 360px·414px 뷰포트에서 모든 화면 가로 스크롤/잘림 점검 및 수정 — `tests/e2e/layout.spec.ts`
+- [X] T074 [P] 네트워크 오류 시 홈·승인 목록의 오류 안내와 재시도 동작 점검 (FR-014)
+- [X] T075 [P] 린트·타입 체크(`npm run lint`, `npx tsc --noEmit`)를 통과시키고 `package.json`에 `npm run check`(lint+tsc+test) 스크립트 추가
+- [X] T076 보안 점검: 클라이언트 번들에 서비스 롤 키 미포함, `.env.local` 미커밋, 모든 테이블 RLS 활성 확인 (Constitution V, VI)
+- [~] T077 배포: Supabase 프로젝트 생성·마이그레이션 적용(`npx supabase db push`), 카카오 개발자 콘솔 Redirect URI와 Supabase Auth 설정, Vercel 환경변수 등록 및 배포 — `README.md`에 절차 기록
 - [ ] T078 quickstart.md 8개 시나리오를 배포 환경 모바일 기기(iOS/Android)에서 수동 검증
 
 ---
