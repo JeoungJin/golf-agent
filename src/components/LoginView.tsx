@@ -9,14 +9,14 @@ export function LoginView({ error }: { error?: string }) {
   return (
     <main className="flex min-h-dvh flex-col items-center justify-center gap-8 py-12">
       <div className="text-center">
-        <h1 className="text-2xl font-bold">소모임 골프</h1>
+        <h1 className="text-2xl font-bold">골프사랑</h1>
         <p className="mt-2 text-sm text-neutral-500">
           스크린골프 · 필드 모임 일정과 공지를 한곳에서
         </p>
       </div>
-      <div className="w-full">
+      <div className="flex w-full flex-col items-center">
         {error && (
-          <p role="alert" className="mb-3 text-sm text-red-600">
+          <p role="alert" className="mb-3 text-center text-sm text-red-600">
             {MESSAGES[error] ?? DEFAULT_MESSAGE}
           </p>
         )}

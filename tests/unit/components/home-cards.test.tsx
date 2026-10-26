@@ -44,13 +44,22 @@ describe("NoticeCard", () => {
     render(<NoticeCard notice={notice} />);
     expect(screen.getByText("10월 정모 안내")).toBeInTheDocument();
     expect(screen.getByText("이번 달 정모는 토요일 오후에 진행됩니다.")).toBeInTheDocument();
-    expect(screen.getByRole("link")).toHaveAttribute("href", "/notices/n1");
+    expect(screen.getByRole("link", { name: /10월 정모 안내/ })).toHaveAttribute(
+      "href",
+      "/notices/n1",
+    );
+  });
+
+  it("'공지 목록' 버튼으로 전체 공지 목록에 이동할 수 있다", () => {
+    render(<NoticeCard notice={notice} />);
+    expect(screen.getByRole("link", { name: "공지 목록" })).toHaveAttribute("href", "/notices");
   });
 
   it("공지가 없으면 빈 상태 안내를 표시한다", () => {
     render(<NoticeCard notice={null} />);
     expect(screen.getByText("등록된 공지가 없습니다")).toBeInTheDocument();
-    expect(screen.queryByRole("link")).not.toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: /공지가 없습니다/ })).not.toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "공지 목록" })).toHaveAttribute("href", "/notices");
   });
 });
 

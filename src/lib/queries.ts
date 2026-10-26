@@ -77,3 +77,14 @@ export async function fetchNotice(supabase: SupabaseClient, id: string): Promise
   if (error || !data) return null;
   return toNotice(data as NoticeRow);
 }
+
+/** 전체 공지 목록(최신순). 실패하면 null. */
+export async function fetchNotices(supabase: SupabaseClient): Promise<Notice[] | null> {
+  const { data, error } = await supabase
+    .from("notices")
+    .select("id, title, body, author_id, created_at, updated_at")
+    .order("created_at", { ascending: false })
+    .limit(100);
+  if (error) return null;
+  return (data as NoticeRow[]).map(toNotice);
+}

@@ -2,8 +2,8 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "소모임 골프",
-    short_name: "소모임 골프",
+    name: "골프사랑",
+    short_name: "골프사랑",
     description: "스크린골프·필드 모임 일정과 공지를 한곳에서 확인하세요.",
     lang: "ko",
     start_url: "/",

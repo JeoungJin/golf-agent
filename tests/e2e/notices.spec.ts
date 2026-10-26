@@ -105,3 +105,29 @@ test("멤버에게는 작성·수정·삭제 수단이 없고 직접 접근은 �
 
   await ctx.close();
 });
+
+test("홈의 '공지 목록'에서 전체 공지를 최신순으로 보고 상세로 이동한다", async ({ page, context }) => {
+  const manager = await createTestUser("매니저");
+  const oldId = await seedNotice({ authorId: manager.id, title: "오래된 공지", body: "예전 내용" });
+  await seedNotice({ authorId: manager.id, title: "최신 공지", body: "새 내용" });
+  await signInAs(context, manager);
+
+  await page.goto("/");
+  await page.getByRole("link", { name: "공지 목록" }).click();
+  await expect(page).toHaveURL(/\/notices$/);
+
+  const titles = await page.getByRole("listitem").allInnerTexts();
+  expect(titles[0]).toContain("최신 공지");
+  expect(titles[1]).toContain("오래된 공지");
+
+  await page.getByRole("link", { name: /오래된 공지/ }).click();
+  await expect(page).toHaveURL(new RegExp(`/notices/${oldId}$`));
+});
+
+test("공지가 없으면 목록에 빈 상태 안내가 보인다", async ({ page, context }) => {
+  const manager = await createTestUser("매니저");
+  await signInAs(context, manager);
+
+  await page.goto("/notices");
+  await expect(page.getByText("등록된 공지가 없습니다")).toBeVisible();
+});

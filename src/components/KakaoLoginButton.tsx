@@ -25,12 +25,12 @@ export function KakaoLoginButton() {
   }
 
   return (
-    <div className="w-full">
+    <div className="flex flex-col items-center">
       <button
         type="button"
         onClick={handleClick}
         disabled={pending}
-        className="w-full rounded-xl bg-[#FEE500] px-4 py-3.5 text-base font-semibold text-[#191919] disabled:opacity-60"
+        className="rounded-lg bg-[#FEE500] px-6 py-2.5 text-sm font-semibold text-[#191919] disabled:opacity-60"
       >
         카카오로 로그인
       </button>

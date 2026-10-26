@@ -41,6 +41,16 @@ describe("LoginView", () => {
     expect(screen.queryByRole("alert")).not.toBeInTheDocument();
   });
 
+  it("모임 이름 '골프사랑'을 제목으로 보여 준다", () => {
+    render(<LoginView />);
+    expect(screen.getByRole("heading", { level: 1, name: "골프사랑" })).toBeInTheDocument();
+  });
+
+  it("카카오 버튼은 화면 폭을 가득 채우지 않는 작은 크기다", () => {
+    render(<LoginView />);
+    expect(screen.getByRole("button", { name: "카카오로 로그인" })).not.toHaveClass("w-full");
+  });
+
   it("error 가 전달되면 한국어 안내를 표시한다", () => {
     render(<LoginView error="auth" />);
     expect(screen.getByRole("alert")).toHaveTextContent("로그인에 실패했습니다");

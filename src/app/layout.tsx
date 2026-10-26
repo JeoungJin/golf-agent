@@ -3,7 +3,7 @@ import { ServiceWorkerRegister } from "@/components/ServiceWorkerRegister";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "소모임 골프",
+  title: "골프사랑",
   description: "스크린골프·필드 모임 일정과 공지를 한곳에서 확인하세요.",
 };
 
