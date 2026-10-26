@@ -66,21 +66,21 @@ description: "Task list for 카카오 로그인 · 홈 화면 추가 안내 · �
 
 ### Tests for User Story 1 (먼저 작성, 실패 확인) ⚠️
 
-- [ ] T017 [P] [US1] `access-route` 단위 테스트: 비로그인→`/login`, pending→`/pending`, rejected→`/rejected`, approved가 `/login` 접근 시→`/`, approved 비매니저의 manager 전용 경로(`/notices/new`, `/notices/[id]/edit`, `/admin/members`)→`/`, 허용 경로는 통과 — `tests/unit/domain/access-route.test.ts`
-- [ ] T018 [P] [US1] pgTAP: 첫 `auth.users` 가입자는 `members`에 role=manager, status=approved; 두 번째는 member/pending; 닉네임 메타데이터가 없으면 nickname='회원', avatar_url null; 동일 사용자 재삽입 불가 — `supabase/tests/10_member_trigger.sql`
-- [ ] T019 [P] [US1] 로그인 페이지 컴포넌트 테스트: "카카오로 로그인" 버튼 렌더링, 클릭 시 `signInWithOAuth({provider:'kakao', options:{scopes:'profile_nickname profile_image'}})` 호출, 인증 실패 쿼리(`?error=`) 시 한국어 오류 문구와 재시도 가능 — `tests/unit/components/login.test.tsx`
-- [ ] T020 [US1] Playwright E2E: 비로그인으로 `/` 접속 시 `/login` 이동; 테스트 세션 주입 후 홈 표시; 로그아웃 후 `/login` 복귀 — `tests/e2e/login.spec.ts`
+- [X] T017 [P] [US1] `access-route` 단위 테스트: 비로그인→`/login`, pending→`/pending`, rejected→`/rejected`, approved가 `/login` 접근 시→`/`, approved 비매니저의 manager 전용 경로(`/notices/new`, `/notices/[id]/edit`, `/admin/members`)→`/`, 허용 경로는 통과 — `tests/unit/domain/access-route.test.ts`
+- [X] T018 [P] [US1] pgTAP: 첫 `auth.users` 가입자는 `members`에 role=manager, status=approved; 두 번째는 member/pending; 닉네임 메타데이터가 없으면 nickname='회원', avatar_url null; 동일 사용자 재삽입 불가 — `supabase/tests/10_member_trigger.sql`
+- [X] T019 [P] [US1] 로그인 페이지 컴포넌트 테스트: "카카오로 로그인" 버튼 렌더링, 클릭 시 `signInWithOAuth({provider:'kakao', options:{scopes:'profile_nickname profile_image'}})` 호출, 인증 실패 쿼리(`?error=`) 시 한국어 오류 문구와 재시도 가능 — `tests/unit/components/login.test.tsx`
+- [X] T020 [US1] Playwright E2E: 비로그인으로 `/` 접속 시 `/login` 이동; 테스트 세션 주입 후 홈 표시; 로그아웃 후 `/login` 복귀 — `tests/e2e/login.spec.ts`
 
 ### Implementation for User Story 1
 
-- [ ] T021 [US1] `src/domain/access-route.ts` 구현(T017 통과): 입력 `{session, status, role, path}` → `{type:'allow'} | {type:'redirect', to}` (contracts/routes.md 규칙)
-- [ ] T022 [US1] 회원 생성 트리거 마이그레이션(T018 통과): `auth.users` insert 시 `pg_advisory_xact_lock` 후 `members` 0명이면 manager+approved, 아니면 member+pending; `raw_user_meta_data`의 닉네임·프로필 이미지 사용, 없으면 '회원'/null — `supabase/migrations/0002_member_trigger.sql`
-- [ ] T023 [US1] members SELECT RLS 정책 추가(본인 행 조회 가능) — `supabase/migrations/0003_members_rls.sql`
-- [ ] T024 [US1] 로그인 페이지 및 카카오 로그인 버튼(T019 통과), 한국어 오류 안내 — `src/app/login/page.tsx`, `src/components/KakaoLoginButton.tsx`
-- [ ] T025 [US1] OAuth 콜백 라우트: 코드 교환 후 `members.status`를 조회해 `access-route` 규칙대로 이동, 실패 시 `/login?error=...` — `src/app/auth/callback/route.ts`
-- [ ] T026 [US1] 미들웨어: 세션 갱신 + `access-route`로 모든 경로(`/login`, `/auth/*`, 정적 자원 제외) 보호 — `src/middleware.ts`
-- [ ] T027 [US1] 로그아웃 액션/버튼(헤더 포함, 닉네임 표시) — `src/components/Header.tsx`, `src/app/(member)/layout.tsx`
-- [ ] T028 [US1] T017–T020 전체 통과 확인 (`npm run test`, `npx supabase test db`, `npm run test:e2e`)
+- [X] T021 [US1] `src/domain/access-route.ts` 구현(T017 통과): 입력 `{session, status, role, path}` → `{type:'allow'} | {type:'redirect', to}` (contracts/routes.md 규칙)
+- [X] T022 [US1] 회원 생성 트리거 마이그레이션(T018 통과): `auth.users` insert 시 `pg_advisory_xact_lock` 후 `members` 0명이면 manager+approved, 아니면 member+pending; `raw_user_meta_data`의 닉네임·프로필 이미지 사용, 없으면 '회원'/null — `supabase/migrations/0002_member_trigger.sql`
+- [X] T023 [US1] members SELECT RLS 정책 추가(본인 행 조회 가능) — `supabase/migrations/0003_members_rls.sql`
+- [X] T024 [US1] 로그인 페이지 및 카카오 로그인 버튼(T019 통과), 한국어 오류 안내 — `src/app/login/page.tsx`, `src/components/KakaoLoginButton.tsx`
+- [X] T025 [US1] OAuth 콜백 라우트: 코드 교환 후 `members.status`를 조회해 `access-route` 규칙대로 이동, 실패 시 `/login?error=...` — `src/app/auth/callback/route.ts`
+- [X] T026 [US1] 미들웨어: 세션 갱신 + `access-route`로 모든 경로(`/login`, `/auth/*`, 정적 자원 제외) 보호 — `src/middleware.ts`
+- [X] T027 [US1] 로그아웃 액션/버튼(헤더 포함, 닉네임 표시) — `src/components/Header.tsx`, `src/app/(member)/layout.tsx`
+- [X] T028 [US1] T017–T020 전체 통과 확인 (`npm run test`, `npx supabase test db`, `npm run test:e2e`)
 
 **Checkpoint**: 로그인/로그아웃과 접근 차단 동작 (MVP 기반)
 
