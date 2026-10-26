@@ -62,13 +62,19 @@ describe("resolveAccess", () => {
     });
 
     it("매니저 전용 경로는 멤버를 홈으로 보낸다", () => {
-      for (const path of ["/notices/new", "/notices/abc/edit", "/admin/members"]) {
+      for (const path of ["/notices/new", "/notices/abc/edit", "/admin/members", "/rounds/new", "/rounds/abc/edit"]) {
         expect(resolveAccess({ ...member, path })).toEqual(to("/"));
       }
     });
 
+    it("라운딩 목록과 상세는 멤버도 볼 수 있다", () => {
+      for (const path of ["/rounds", "/rounds/abc"]) {
+        expect(resolveAccess({ ...member, path })).toEqual(allow);
+      }
+    });
+
     it("매니저는 매니저 전용 경로를 허용한다", () => {
-      for (const path of ["/notices/new", "/notices/abc/edit", "/admin/members"]) {
+      for (const path of ["/notices/new", "/notices/abc/edit", "/admin/members", "/rounds/new", "/rounds/abc/edit"]) {
         expect(resolveAccess({ ...manager, path })).toEqual(allow);
       }
     });

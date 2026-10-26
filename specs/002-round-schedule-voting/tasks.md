@@ -46,20 +46,20 @@ description: "Task list for 라운딩 일정 관리 · 참석 투표"
 
 ### Tests for User Story 1 (먼저 작성하고 Red 확인)
 
-- [ ] T006 [P] [US1] pgTAP `create_round`: 매니저 성공 후 id 반환·`scheduled`, 멤버·승인 대기·거절은 `42501`, anon은 execute 거부, 입력 검증(빈/101자 장소, 음수 비용, 정원 0, 과거 일시, 정원 null 허용)별 오류 코드(`invalid_input`, `starts_in_past`) — `supabase/tests/60_create_round.sql`
-- [ ] T007 [P] [US1] 단위 테스트 `validateRound`(종류 필수, 장소 trim 후 1..100자, 비용 0 이상 정수·기본 0, 정원 비움 허용·1 이상 정수, 일시 필수·`now` 이후, 항목별 한국어 오류 메시지)와 `parseKstDateTime`(`2026-11-10T14:00` → `2026-11-10T05:00:00.000Z`, 잘못된 형식은 null) — `tests/unit/domain/round-validation.test.ts`
-- [ ] T008 [P] [US1] 단위 테스트 `resolveAccess` 확장: `/rounds/new`는 매니저만 허용, 멤버는 `/`로 리다이렉트(기존 케이스 유지, 100% 커버리지) — `tests/unit/domain/access-route.test.ts`
-- [ ] T009 [P] [US1] 컴포넌트 테스트 `RoundForm`: 필드 렌더링, 빈 제출 시 항목별 오류 표시와 `onSubmit` 미호출, 정상 제출 시 정규화된 값 전달, 서버 오류 메시지 표시 — `tests/unit/components/round-form.test.tsx`
-- [ ] T010 [US1] Playwright E2E: 매니저가 `/rounds/new`에서 등록 → 상세 이동, 정원 비움 허용, 빈 값 오류, 멤버는 `/rounds/new` 접근 시 홈으로 이동 — `tests/e2e/rounds.spec.ts`
+- [X] T006 [P] [US1] pgTAP `create_round`: 매니저 성공 후 id 반환·`scheduled`, 멤버·승인 대기·거절은 `42501`, anon은 execute 거부, 입력 검증(빈/101자 장소, 음수 비용, 정원 0, 과거 일시, 정원 null 허용)별 오류 코드(`invalid_input`, `starts_in_past`) — `supabase/tests/60_create_round.sql`
+- [X] T007 [P] [US1] 단위 테스트 `validateRound`(종류 필수, 장소 trim 후 1..100자, 비용 0 이상 정수·기본 0, 정원 비움 허용·1 이상 정수, 일시 필수·`now` 이후, 항목별 한국어 오류 메시지)와 `parseKstDateTime`(`2026-11-10T14:00` → `2026-11-10T05:00:00.000Z`, 잘못된 형식은 null) — `tests/unit/domain/round-validation.test.ts`
+- [X] T008 [P] [US1] 단위 테스트 `resolveAccess` 확장: `/rounds/new`는 매니저만 허용, 멤버는 `/`로 리다이렉트(기존 케이스 유지, 100% 커버리지) — `tests/unit/domain/access-route.test.ts`
+- [X] T009 [P] [US1] 컴포넌트 테스트 `RoundForm`: 필드 렌더링, 빈 제출 시 항목별 오류 표시와 `onSubmit` 미호출, 정상 제출 시 정규화된 값 전달, 서버 오류 메시지 표시 — `tests/unit/components/round-form.test.tsx`
+- [X] T010 [US1] Playwright E2E: 매니저가 `/rounds/new`에서 등록 → 상세 이동, 정원 비움 허용, 빈 값 오류, 멤버는 `/rounds/new` 접근 시 홈으로 이동 — `tests/e2e/rounds.spec.ts`
 
 ### Implementation for User Story 1
 
-- [ ] T011 [US1] 마이그레이션 `create_round`(매니저 검증, 입력 검증, 오류 코드, security definer, `anon` 제외 execute) — `supabase/migrations/0008_create_round.sql` (T006 통과)
-- [ ] T012 [P] [US1] `src/domain/round-validation.ts` 구현(`validateRound`, `parseKstDateTime`) (T007 통과)
-- [ ] T013 [US1] `src/domain/access-route.ts`에 `/rounds/new`, `/rounds/[id]/edit` 매니저 전용 규칙 추가 (T008 통과)
-- [ ] T014 [US1] `RoundForm` 컴포넌트(종류 라디오, `datetime-local`, 장소, 비용, 정원, 모바일 레이아웃) — `src/components/RoundForm.tsx` (T009 통과)
-- [ ] T015 [US1] 서버 액션 `createRound`(서버 재검증 → RPC, 오류 코드의 한국어 변환 `src/lib/round-errors.ts`) 와 `/rounds/new` 페이지 — `src/app/(member)/rounds/actions.ts`, `src/app/(member)/rounds/new/page.tsx`
-- [ ] T016 [US1] T006–T010 통과 확인 및 `db push` 전 마이그레이션 검토
+- [X] T011 [US1] 마이그레이션 `create_round`(매니저 검증, 입력 검증, 오류 코드, security definer, `anon` 제외 execute) — `supabase/migrations/0008_create_round.sql` (T006 통과)
+- [X] T012 [P] [US1] `src/domain/round-validation.ts` 구현(`validateRound`, `parseKstDateTime`) (T007 통과)
+- [X] T013 [US1] `src/domain/access-route.ts`에 `/rounds/new`, `/rounds/[id]/edit` 매니저 전용 규칙 추가 (T008 통과)
+- [X] T014 [US1] `RoundForm` 컴포넌트(종류 라디오, `datetime-local`, 장소, 비용, 정원, 모바일 레이아웃) — `src/components/RoundForm.tsx` (T009 통과)
+- [X] T015 [US1] 서버 액션 `createRound`(서버 재검증 → RPC, 오류 코드의 한국어 변환 `src/lib/round-errors.ts`) 와 `/rounds/new` 페이지 — `src/app/(member)/rounds/actions.ts`, `src/app/(member)/rounds/new/page.tsx`
+- [X] T016 [US1] T006–T010 통과 확인 및 `db push` 전 마이그레이션 검토
 
 **Checkpoint**: 매니저가 라운딩을 등록할 수 있음 (MVP)
 

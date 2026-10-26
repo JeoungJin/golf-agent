@@ -20,6 +20,8 @@ function isManagerOnly(path: string): boolean {
   return (
     path === "/notices/new" ||
     /^\/notices\/[^/]+\/edit$/.test(path) ||
+    path === "/rounds/new" ||
+    /^\/rounds\/[^/]+\/edit$/.test(path) ||
     path === "/admin" ||
     path.startsWith("/admin/")
   );
