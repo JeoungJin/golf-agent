@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { InstallPrompt } from "@/components/InstallPrompt";
 import { NextRoundCard } from "@/components/NextRoundCard";
 import { NoticeCard } from "@/components/NoticeCard";
 import { RefreshRetry } from "@/components/ErrorRetry";
@@ -22,6 +23,7 @@ export default async function HomePage() {
 
   return (
     <main className="space-y-4 py-2">
+      <InstallPrompt />
       <NextRoundCard round={data.round} />
       <NoticeCard notice={data.notice} />
       {member?.role === "manager" && (

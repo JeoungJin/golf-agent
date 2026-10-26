@@ -176,18 +176,18 @@ description: "Task list for 카카오 로그인 · 홈 화면 추가 안내 · �
 
 ### Tests for User Story 4 ⚠️
 
-- [ ] T063 [P] [US4] `install-prompt` 단위 테스트(순수 함수 `shouldShowInstallPrompt({isStandalone, dismissedAt, neverShow, now})`와 `detectPlatform(userAgent)`): standalone이면 false, neverShow면 false, 닫은 지 7일 미만이면 false, 정확히 7일 경과 시 true, 기록 없으면 true; iOS/Android/기타 판별 — `tests/unit/domain/install-prompt.test.ts`
-- [ ] T064 [P] [US4] `InstallPrompt` 컴포넌트 테스트: iOS는 "공유 버튼 → 홈 화면에 추가" 안내, Android에서 `beforeinstallprompt` 수신 시 "추가하기" 버튼이 `prompt()` 호출, 닫기 시 localStorage에 시각 저장, '다시 보지 않기' 저장, localStorage 접근 실패 시에도 오류 없이 동작 — `tests/unit/components/install-prompt.test.tsx`
-- [ ] T065 [US4] Playwright E2E: 첫 접속 시 팝업 표시, 닫기 후 새로고침해도 미표시, standalone 에뮬레이션 시 미표시 — `tests/e2e/install-prompt.spec.ts`
+- [X] T063 [P] [US4] `install-prompt` 단위 테스트(순수 함수 `shouldShowInstallPrompt({isStandalone, dismissedAt, neverShow, now})`와 `detectPlatform(userAgent)`): standalone이면 false, neverShow면 false, 닫은 지 7일 미만이면 false, 정확히 7일 경과 시 true, 기록 없으면 true; iOS/Android/기타 판별 — `tests/unit/domain/install-prompt.test.ts`
+- [X] T064 [P] [US4] `InstallPrompt` 컴포넌트 테스트: iOS는 "공유 버튼 → 홈 화면에 추가" 안내, Android에서 `beforeinstallprompt` 수신 시 "추가하기" 버튼이 `prompt()` 호출, 닫기 시 localStorage에 시각 저장, '다시 보지 않기' 저장, localStorage 접근 실패 시에도 오류 없이 동작 — `tests/unit/components/install-prompt.test.tsx`
+- [X] T065 [US4] Playwright E2E: 첫 접속 시 팝업 표시, 닫기 후 새로고침해도 미표시, standalone 에뮬레이션 시 미표시 — `tests/e2e/install-prompt.spec.ts`
 
 ### Implementation for User Story 4
 
-- [ ] T066 [US4] `src/domain/install-prompt.ts` 구현(T063 통과)
-- [ ] T067 [US4] `InstallPrompt` 컴포넌트(T064 통과)를 홈에 배치 — `src/components/InstallPrompt.tsx`, `src/app/(member)/page.tsx`
-- [ ] T068 [P] [US4] 웹 앱 매니페스트(이름, 한국어 설명, `display: standalone`, 테마 색, 아이콘) — `src/app/manifest.ts`
-- [ ] T069 [P] [US4] 앱 아이콘 192/512 및 maskable 생성 — `public/icons/`
-- [ ] T070 [P] [US4] 최소 서비스 워커 등록(캐싱 없이 설치 가능성 충족) — `public/sw.js`, `src/components/ServiceWorkerRegister.tsx`
-- [ ] T071 [US4] T063–T065 통과 확인
+- [X] T066 [US4] `src/domain/install-prompt.ts` 구현(T063 통과)
+- [X] T067 [US4] `InstallPrompt` 컴포넌트(T064 통과)를 홈에 배치 — `src/components/InstallPrompt.tsx`, `src/app/(member)/page.tsx`
+- [X] T068 [P] [US4] 웹 앱 매니페스트(이름, 한국어 설명, `display: standalone`, 테마 색, 아이콘) — `src/app/manifest.ts`
+- [X] T069 [P] [US4] 앱 아이콘 192/512 및 maskable 생성 — `public/icons/`
+- [X] T070 [P] [US4] 최소 서비스 워커 등록(캐싱 없이 설치 가능성 충족) — `public/sw.js`, `src/components/ServiceWorkerRegister.tsx`
+- [X] T071 [US4] T063–T065 통과 확인
 
 **Checkpoint**: 모든 스토리 완료
 

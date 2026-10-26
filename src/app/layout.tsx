@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { ServiceWorkerRegister } from "@/components/ServiceWorkerRegister";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -21,6 +22,7 @@ export default function RootLayout({
         <div className="mx-auto min-h-dvh w-full max-w-[480px] px-4">
           {children}
         </div>
+        <ServiceWorkerRegister />
       </body>
     </html>
   );
