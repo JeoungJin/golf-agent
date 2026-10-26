@@ -6,8 +6,14 @@ import {
   roundKindLabel,
   roundStatusLabel,
 } from "@/domain/format";
-import { fetchRound } from "@/lib/queries";
+import { RefreshRetry } from "@/components/ErrorRetry";
+import { VotePanel } from "@/components/VotePanel";
+import { formatCapacity } from "@/domain/format";
+import { summarizeVotes, voteBlockReason } from "@/domain/vote-summary";
+import { getCurrentMember } from "@/lib/members";
+import { fetchRound, fetchVotes } from "@/lib/queries";
 import { createClient } from "@/lib/supabase/server";
+import { castVote, withdrawVote } from "../actions";
 
 export const dynamic = "force-dynamic";
 
@@ -18,8 +24,16 @@ export default async function RoundDetailPage({ params }: { params: Promise<{ id
   // 형식이 틀린 id 는 DB 오류 대신 404 로 처리한다.
   if (!UUID.test(id)) notFound();
 
-  const round = await fetchRound(await createClient(), id);
+  const supabase = await createClient();
+  const [round, votes, member] = await Promise.all([
+    fetchRound(supabase, id),
+    fetchVotes(supabase, [id]),
+    getCurrentMember(),
+  ]);
   if (!round) notFound();
+
+  const summary = summarizeVotes(votes ?? [], member?.id ?? null, round.capacity);
+  const blockReason = voteBlockReason(round, new Date());
 
   const statusLabel = roundStatusLabel(round.status);
 
@@ -53,6 +67,29 @@ export default async function RoundDetailPage({ params }: { params: Promise<{ id
           <dd>{round.capacity === null ? "제한 없음" : `${round.capacity}명`}</dd>
         </div>
       </dl>
+
+      {votes === null ? (
+        <RefreshRetry />
+      ) : (
+        <>
+          <p className="text-sm text-neutral-700">
+            참석 {formatCapacity(summary.attending, round.capacity)} · 대기 {summary.waiting}명 · 불참{" "}
+            {summary.declined}명
+          </p>
+          {summary.overCapacity && (
+            <p className="text-xs text-neutral-500">
+              정원이 줄어 참석 인원이 정원보다 많습니다. 기존 참석은 유지됩니다.
+            </p>
+          )}
+          <VotePanel
+            status={summary.mine.status}
+            waitPosition={summary.mine.waitPosition}
+            blockReason={blockReason}
+            onVote={castVote.bind(null, id)}
+            onWithdraw={withdrawVote.bind(null, id)}
+          />
+        </>
+      )}
     </main>
   );
 }

@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { validateRound, type RoundValue } from "@/domain/round-validation";
+import type { VoteChoice } from "@/domain/types";
 import { GENERIC_ROUND_ERROR, roundErrorMessage } from "@/lib/round-errors";
 import { createClient } from "@/lib/supabase/server";
 
@@ -43,4 +44,26 @@ export async function createRound(value: RoundValue): Promise<ActionResult> {
   revalidatePath("/");
   revalidatePath("/rounds");
   redirect(`/rounds/${data}`);
+}
+
+function revalidateRoundViews(roundId: string) {
+  revalidatePath("/");
+  revalidatePath("/rounds");
+  revalidatePath(`/rounds/${roundId}`);
+}
+
+/** 참석/불참 투표. 정원·마감·권한은 DB 함수가 최종 판단한다. */
+export async function castVote(roundId: string, choice: VoteChoice): Promise<ActionResult> {
+  const { error } = await (await createClient()).rpc("cast_vote", {
+    p_round: roundId,
+    p_choice: choice,
+  });
+  if (error) return { error: roundErrorMessage(error) };
+  revalidateRoundViews(roundId);
+}
+
+export async function withdrawVote(roundId: string): Promise<ActionResult> {
+  const { error } = await (await createClient()).rpc("withdraw_vote", { p_round: roundId });
+  if (error) return { error: roundErrorMessage(error) };
+  revalidateRoundViews(roundId);
 }

@@ -45,8 +45,26 @@ export async function deleteTestUser(user: TestUser) {
 
 /** 모든 테스트 데이터 초기화. notices 가 members 를 참조하므로 데이터부터 지우고 사용자를 지운다. */
 export async function resetDatabase() {
+  // 안전장치 1: 로컬 Supabase 가 아니면 절대 지우지 않는다 (운영 DB 보호).
+  const host = new URL(url).hostname;
+  if (host !== "127.0.0.1" && host !== "localhost") {
+    throw new Error(`E2E 는 로컬 Supabase 에서만 실행할 수 있습니다 (현재: ${host})`);
+  }
+
   const db = admin();
   const NIL = "00000000-0000-0000-0000-000000000000";
+
+  // 안전장치 2: 수동 테스트로 만든 실제(카카오) 계정이 있으면 지우지 않고 중단한다.
+  // 테스트 사용자는 모두 @test.local 이메일이다.
+  const existing = (await db.auth.admin.listUsers({ perPage: 1000 })).data?.users ?? [];
+  const real = existing.filter((u) => !u.email?.endsWith("@test.local"));
+  if (real.length > 0) {
+    throw new Error(
+      `로컬 DB 에 테스트 외 사용자가 ${real.length}명 있어 E2E 를 중단합니다. ` +
+        "수동 테스트 데이터를 지워도 되면 `npx supabase db reset` 후 다시 실행하세요.",
+    );
+  }
+
   const { error: voteError } = await db.from("round_votes").delete().neq("round_id", NIL);
   if (voteError) throw voteError;
   const { error: noticeError } = await db.from("notices").delete().neq("id", NIL);

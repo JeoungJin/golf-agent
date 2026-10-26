@@ -98,19 +98,19 @@ description: "Task list for 라운딩 일정 관리 · 참석 투표"
 
 ### Tests for User Story 3 (먼저 작성하고 Red 확인)
 
-- [ ] T026 [P] [US3] pgTAP 투표: database.md의 검증 항목 3~10(정원 없음 → 항상 참석, 정원 2에 3명 순차, 불참/철회 시 승격, 재신청은 맨 뒤, 같은 선택 반복 시 `requested_at` 불변, `round_closed`/`round_cancelled`, 직접 쓰기 거부, 승인되지 않은 사용자 `forbidden`) — `supabase/tests/70_voting.sql`
-- [ ] T027 [P] [US3] 단위 테스트 `canVote`(미래·미취소만 true, 정확히 티오프 시각이면 false, 취소면 false)와 `summarizeVotes`(참석·대기·불참 수, 내 상태, 내 대기 순번, 정원 초과 여부, 투표 없음) — `tests/unit/domain/vote-summary.test.ts`
-- [ ] T028 [P] [US3] 컴포넌트 테스트 `VotePanel`: 상태별 문구(미투표/참석/대기 N번/불참), 버튼 동작(`onVote`, `onWithdraw` 호출), 마감·취소 시 버튼 숨김과 안내, 처리 중 비활성화, 오류 메시지와 재시도 — `tests/unit/components/vote-panel.test.tsx`
-- [ ] T029 [US3] Playwright E2E: 참석 → 대기 → 승격 흐름, 불참/철회/재신청, 마감된 라운딩에 투표 수단 없음, 새로고침 후 상태 유지 — `tests/e2e/voting.spec.ts`
-- [ ] T030 [US3] Playwright API 레벨 동시성 테스트: 정원 2 라운딩에 서로 다른 5명이 `cast_vote`를 `Promise.all`로 동시 호출 → 참석 정확히 2·대기 3, 정원 없음이면 전원 참석(여러 번 반복해 안정성 확인) — `tests/e2e/vote-concurrency.spec.ts`
+- [X] T026 [P] [US3] pgTAP 투표: database.md의 검증 항목 3~10(정원 없음 → 항상 참석, 정원 2에 3명 순차, 불참/철회 시 승격, 재신청은 맨 뒤, 같은 선택 반복 시 `requested_at` 불변, `round_closed`/`round_cancelled`, 직접 쓰기 거부, 승인되지 않은 사용자 `forbidden`) — `supabase/tests/70_voting.sql`
+- [X] T027 [P] [US3] 단위 테스트 `canVote`(미래·미취소만 true, 정확히 티오프 시각이면 false, 취소면 false)와 `summarizeVotes`(참석·대기·불참 수, 내 상태, 내 대기 순번, 정원 초과 여부, 투표 없음) — `tests/unit/domain/vote-summary.test.ts`
+- [X] T028 [P] [US3] 컴포넌트 테스트 `VotePanel`: 상태별 문구(미투표/참석/대기 N번/불참), 버튼 동작(`onVote`, `onWithdraw` 호출), 마감·취소 시 버튼 숨김과 안내, 처리 중 비활성화, 오류 메시지와 재시도 — `tests/unit/components/vote-panel.test.tsx`
+- [X] T029 [US3] Playwright E2E: 참석 → 대기 → 승격 흐름, 불참/철회/재신청, 마감된 라운딩에 투표 수단 없음, 새로고침 후 상태 유지 — `tests/e2e/voting.spec.ts`
+- [X] T030 [US3] Playwright API 레벨 동시성 테스트: 정원 2 라운딩에 서로 다른 5명이 `cast_vote`를 `Promise.all`로 동시 호출 → 참석 정확히 2·대기 3, 정원 없음이면 전원 참석(여러 번 반복해 안정성 확인) — `tests/e2e/vote-concurrency.spec.ts`
 
 ### Implementation for User Story 3
 
-- [ ] T031 [US3] 마이그레이션 `cast_vote`, `withdraw_vote`, 내부용 `promote_waitlist`(`execute`를 `authenticated`에 부여하지 않음), 라운딩 행 `for update` 잠금 — `supabase/migrations/0009_voting.sql` (T026, T030 통과)
-- [ ] T032 [P] [US3] `src/domain/vote-summary.ts` 구현(`canVote`, `summarizeVotes`) (T027 통과, 100% 커버리지)
-- [ ] T033 [US3] `VotePanel` 컴포넌트 — `src/components/VotePanel.tsx` (T028 통과)
-- [ ] T034 [US3] 서버 액션 `castVote`, `withdrawVote`(경로 revalidate, 오류 코드 한국어 변환)와 상세 페이지에 `VotePanel` 연결 — `src/app/(member)/rounds/actions.ts`, `src/app/(member)/rounds/[id]/page.tsx`
-- [ ] T035 [US3] T026–T030 통과 확인
+- [X] T031 [US3] 마이그레이션 `cast_vote`, `withdraw_vote`, 내부용 `promote_waitlist`(`execute`를 `authenticated`에 부여하지 않음), 라운딩 행 `for update` 잠금 — `supabase/migrations/0009_voting.sql` (T026, T030 통과)
+- [X] T032 [P] [US3] `src/domain/vote-summary.ts` 구현(`canVote`, `summarizeVotes`) (T027 통과, 100% 커버리지)
+- [X] T033 [US3] `VotePanel` 컴포넌트 — `src/components/VotePanel.tsx` (T028 통과)
+- [X] T034 [US3] 서버 액션 `castVote`, `withdrawVote`(경로 revalidate, 오류 코드 한국어 변환)와 상세 페이지에 `VotePanel` 연결 — `src/app/(member)/rounds/actions.ts`, `src/app/(member)/rounds/[id]/page.tsx`
+- [X] T035 [US3] T026–T030 통과 확인
 
 **Checkpoint**: 투표와 대기가 동작
 
