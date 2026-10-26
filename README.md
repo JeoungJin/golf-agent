@@ -13,6 +13,9 @@ npx supabase db reset       # 마이그레이션 + 시드(개발용 샘플 라�
 npm run dev
 ```
 
+### 로컬에서 카카오 로그인 쓰기
+`supabase/.env.example`을 `supabase/.env`로 복사해 REST API 키와 클라이언트 시크릿을 넣고 `npx supabase stop && npx supabase start`로 재시작합니다(`config.toml`에 provider가 이미 켜져 있음). E2E는 카카오를 거치지 않고 세션을 주입하므로 이 설정 없이도 동작합니다.
+
 ## 테스트
 
 ```bash
@@ -39,7 +42,9 @@ npm run test:e2e   # Playwright (360px), 로컬 Supabase 실행 필요
 1. https://developers.kakao.com 에서 애플리케이션을 만들고 **카카오 로그인**을 활성화합니다.
 2. **Redirect URI**에 `https://<프로젝트 ref>.supabase.co/auth/v1/callback` 을 등록합니다.
 3. 동의항목은 **닉네임, 프로필 사진**만 설정합니다(개인정보 최소 수집). 이메일은 요청하지 않습니다.
-   - 카카오는 기본적으로 이메일을 필수로 두는 경우가 있습니다. Supabase 쪽에서 "Allow users without an email"을 켜야 이메일 없이 로그인됩니다(아래 3번).
+   - **주의**: Supabase Auth는 앱이 보낸 scope와 무관하게 `account_email`을 함께 요청합니다. 카카오 콘솔에 이메일 동의항목이 없으면 "설정하지 않은 동의 항목: account_email" 오류가 납니다. 이메일이 "동의불가"로 보이면 앱을 **개인 개발자 비즈 앱으로 전환**(사업자 등록 불필요)한 뒤 `카카오계정(이메일)`을 **선택 동의**로 설정하세요. 선택 동의라 거부해도 로그인되려면 Supabase의 "Allow users without an email"이 필요합니다(아래 3번).
+   - 이메일에 동의한 사용자는 Supabase 내부 `auth.users`에 이메일이 저장됩니다(앱 테이블 `members`에는 저장하지 않음).
+   - 로컬 개발용 Redirect URI도 추가합니다: `http://localhost:54321/auth/v1/callback`, `http://127.0.0.1:54321/auth/v1/callback`
 4. 앱 키 > **REST API 키**(= Client ID)와 보안 > **Client Secret**을 발급·활성화합니다.
 
 ### 3. Supabase 인증 설정 (Dashboard > Authentication)
