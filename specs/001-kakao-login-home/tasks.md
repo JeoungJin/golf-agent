@@ -94,18 +94,18 @@ description: "Task list for 카카오 로그인 · 홈 화면 추가 안내 · �
 
 ### Tests for User Story 1-B ⚠️
 
-- [ ] T029 [P] [US1B] pgTAP: `approve_member`/`reject_member`는 매니저만 호출 가능(멤버·pending·anon은 예외), pending 대상만 전이, approved/rejected 대상에 호출 시 예외; 사용자가 자신의 `members.role`/`status`를 직접 UPDATE하면 거부; 매니저는 members 전체 SELECT, 일반 멤버는 본인 행만 — `supabase/tests/20_member_approval.sql`
-- [ ] T030 [P] [US1B] 컴포넌트 테스트: 가입 신청 목록이 닉네임·신청 시각을 표시하고 승인/거절 버튼이 해당 액션을 호출, 목록이 비면 "대기 중인 신청이 없습니다" — `tests/unit/components/pending-list.test.tsx`
-- [ ] T031 [US1B] Playwright E2E: 첫 계정=매니저로 홈 진입, 둘째 계정은 `/pending`만 접근(홈 직접 접근 시 `/pending`으로 이동), 매니저 승인 후 둘째 계정 홈 접근, 거절된 계정은 `/rejected` — `tests/e2e/approval.spec.ts`
+- [X] T029 [P] [US1B] pgTAP: `approve_member`/`reject_member`는 매니저만 호출 가능(멤버·pending·anon은 예외), pending 대상만 전이, approved/rejected 대상에 호출 시 예외; 사용자가 자신의 `members.role`/`status`를 직접 UPDATE하면 거부; 매니저는 members 전체 SELECT, 일반 멤버는 본인 행만 — `supabase/tests/20_member_approval.sql`
+- [X] T030 [P] [US1B] 컴포넌트 테스트: 가입 신청 목록이 닉네임·신청 시각을 표시하고 승인/거절 버튼이 해당 액션을 호출, 목록이 비면 "대기 중인 신청이 없습니다" — `tests/unit/components/pending-list.test.tsx`
+- [X] T031 [US1B] Playwright E2E: 첫 계정=매니저로 홈 진입, 둘째 계정은 `/pending`만 접근(홈 직접 접근 시 `/pending`으로 이동), 매니저 승인 후 둘째 계정 홈 접근, 거절된 계정은 `/rejected` — `tests/e2e/approval.spec.ts`
 
 ### Implementation for User Story 1-B
 
-- [ ] T032 [US1B] 마이그레이션(T029 통과): `is_approved()`, `is_manager()`(security definer, `auth.uid()` 기준, approved 상태 필요), `approve_member(target uuid)`, `reject_member(target uuid)`, 매니저 members SELECT 정책 — `supabase/migrations/0004_approval.sql`
-- [ ] T033 [P] [US1B] 승인 대기 안내 페이지(한국어, 새로고침/다시 확인 버튼) — `src/app/pending/page.tsx`
-- [ ] T034 [P] [US1B] 거절 안내 페이지 — `src/app/rejected/page.tsx`
-- [ ] T035 [US1B] 가입 신청 관리 페이지와 목록 컴포넌트(T030 통과), 승인/거절 server action — `src/app/(member)/admin/members/page.tsx`, `src/components/PendingMemberList.tsx`, `src/app/(member)/admin/members/actions.ts`
-- [ ] T036 [US1B] 매니저에게만 헤더에 "가입 신청" 링크 노출 — `src/components/Header.tsx`
-- [ ] T037 [US1B] T029–T031 통과 확인
+- [X] T032 [US1B] 마이그레이션(T029 통과): `is_approved()`, `is_manager()`(security definer, `auth.uid()` 기준, approved 상태 필요), `approve_member(target uuid)`, `reject_member(target uuid)`, 매니저 members SELECT 정책 — `supabase/migrations/0004_approval.sql`
+- [X] T033 [P] [US1B] 승인 대기 안내 페이지(한국어, 새로고침/다시 확인 버튼) — `src/app/pending/page.tsx`
+- [X] T034 [P] [US1B] 거절 안내 페이지 — `src/app/rejected/page.tsx`
+- [X] T035 [US1B] 가입 신청 관리 페이지와 목록 컴포넌트(T030 통과), 승인/거절 server action — `src/app/(member)/admin/members/page.tsx`, `src/components/PendingMemberList.tsx`, `src/app/(member)/admin/members/actions.ts`
+- [X] T036 [US1B] 매니저에게만 헤더에 "가입 신청" 링크 노출 — `src/components/Header.tsx`
+- [X] T037 [US1B] T029–T031 통과 확인
 
 **Checkpoint**: 접근 통제 완성 (비승인자는 모임 정보 열람 불가, SC-008)
 

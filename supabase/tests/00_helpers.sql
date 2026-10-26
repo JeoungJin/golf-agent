@@ -45,6 +45,10 @@ begin
   perform set_config('request.jwt.claim.sub', '', true);
 end $$;
 
+-- 테스트 중 역할을 전환한 뒤에도 헬퍼를 호출할 수 있어야 한다.
+grant usage on schema tests to anon, authenticated;
+grant execute on all functions in schema tests to anon, authenticated;
+
 -- pg_prove가 유효한 TAP 출력으로 인식하도록 최소 계획을 둔다.
 select plan(2);
 select has_schema('tests', 'tests 헬퍼 스키마가 존재한다');

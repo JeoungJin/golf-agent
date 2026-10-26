@@ -7,12 +7,12 @@ export default async function MemberLayout({ children }: { children: React.React
     data: { user },
   } = await supabase.auth.getUser();
   const { data: member } = user
-    ? await supabase.from("members").select("nickname").eq("id", user.id).maybeSingle()
+    ? await supabase.from("members").select("nickname, role").eq("id", user.id).maybeSingle()
     : { data: null };
 
   return (
     <>
-      <Header nickname={member?.nickname ?? "회원"} />
+      <Header nickname={member?.nickname ?? "회원"} isManager={member?.role === "manager"} />
       {children}
     </>
   );
