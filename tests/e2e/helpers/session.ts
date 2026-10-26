@@ -36,13 +36,20 @@ export async function deleteTestUser(user: TestUser) {
   await admin().auth.admin.deleteUser(user.id);
 }
 
-/** 모든 테스트 데이터 초기화 (members는 auth.users 삭제로 cascade). */
+/** 모든 테스트 데이터 초기화. notices 가 members 를 참조하므로 데이터부터 지우고 사용자를 지운다. */
 export async function resetDatabase() {
   const db = admin();
+  const NIL = "00000000-0000-0000-0000-000000000000";
+  const { error: noticeError } = await db.from("notices").delete().neq("id", NIL);
+  if (noticeError) throw noticeError;
+  const { error: roundError } = await db.from("rounds").delete().neq("id", NIL);
+  if (roundError) throw roundError;
+
   const { data } = await db.auth.admin.listUsers({ perPage: 1000 });
-  for (const u of data?.users ?? []) await db.auth.admin.deleteUser(u.id);
-  await db.from("notices").delete().neq("id", "00000000-0000-0000-0000-000000000000");
-  await db.from("rounds").delete().neq("id", "00000000-0000-0000-0000-000000000000");
+  for (const u of data?.users ?? []) {
+    const { error } = await db.auth.admin.deleteUser(u.id);
+    if (error) throw error;
+  }
 }
 
 /** 사용자로 로그인한 Supabase 세션을 @supabase/ssr 쿠키 형식으로 주입한다. */
@@ -71,3 +78,32 @@ export async function signInAs(context: BrowserContext, user: TestUser) {
     cookies.map((c) => ({ ...c, domain: "localhost", path: "/" })),
   );
 }
+
+export async function seedRound(input: {
+  kind?: "screen" | "field";
+  startsAt: Date;
+  location?: string;
+  fee?: number;
+}) {
+  const { error } = await admin()
+    .from("rounds")
+    .insert({
+      kind: input.kind ?? "screen",
+      starts_at: input.startsAt.toISOString(),
+      location: input.location ?? "테스트 스크린골프장",
+      fee: input.fee ?? 25000,
+    });
+  if (error) throw error;
+}
+
+export async function seedNotice(input: { authorId: string; title: string; body: string }) {
+  const { data, error } = await admin()
+    .from("notices")
+    .insert({ author_id: input.authorId, title: input.title, body: input.body })
+    .select("id")
+    .single();
+  if (error) throw error;
+  return data.id as string;
+}
+
+export const daysFromNow = (days: number) => new Date(Date.now() + days * 86_400_000);

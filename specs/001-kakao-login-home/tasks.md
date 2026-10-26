@@ -119,24 +119,24 @@ description: "Task list for 카카오 로그인 · 홈 화면 추가 안내 · �
 
 ### Tests for User Story 2 ⚠️
 
-- [ ] T038 [P] [US2] `next-round` 단위 테스트: 현재 이후 중 가장 빠른 1건 선택, 과거만 있으면 null, 시작 시각이 정확히 현재면 제외, 동일 시각이면 `created_at`이 먼저인 것, 빈 배열이면 null — `tests/unit/domain/next-round.test.ts`
-- [ ] T039 [P] [US2] `notice-summary` 단위 테스트: 길이 초과 시 말줄임(…) 처리, 짧으면 그대로, 줄바꿈 공백 정규화, 빈 문자열 처리 — `tests/unit/domain/notice-summary.test.ts`
-- [ ] T040 [P] [US2] 포맷터 단위 테스트: KST 기준 일시 표기("10월 31일(토) 오후 1:30" 형식), 비용 천 단위 구분("30,000원"), 종류 라벨(스크린/필드) — `tests/unit/domain/format.test.ts`
-- [ ] T041 [P] [US2] pgTAP: approved 사용자는 `rounds`·`notices` SELECT 가능, pending/rejected/anon은 0건 또는 거부; `rounds` INSERT/UPDATE/DELETE는 모든 역할 거부 — `supabase/tests/30_read_policies.sql`
-- [ ] T042 [P] [US2] 컴포넌트 테스트: `NextRoundCard`(종류·일시·장소·비용 표시, null이면 "예정된 라운딩이 없습니다"), `NoticeCard`(제목·요약 표시, 클릭 시 상세 링크, null이면 "등록된 공지가 없습니다"), 데이터 로드 실패 시 오류 문구와 "다시 시도" 버튼 — `tests/unit/components/home-cards.test.tsx`
-- [ ] T043 [US2] Playwright E2E(360px 뷰포트): 시드 데이터로 홈에 두 카드 표시, 데이터 없을 때 빈 상태, `document.documentElement.scrollWidth <= 360`(가로 스크롤 없음) — `tests/e2e/home.spec.ts`
+- [X] T038 [P] [US2] `next-round` 단위 테스트: 현재 이후 중 가장 빠른 1건 선택, 과거만 있으면 null, 시작 시각이 정확히 현재면 제외, 동일 시각이면 `created_at`이 먼저인 것, 빈 배열이면 null — `tests/unit/domain/next-round.test.ts`
+- [X] T039 [P] [US2] `notice-summary` 단위 테스트: 길이 초과 시 말줄임(…) 처리, 짧으면 그대로, 줄바꿈 공백 정규화, 빈 문자열 처리 — `tests/unit/domain/notice-summary.test.ts`
+- [X] T040 [P] [US2] 포맷터 단위 테스트: KST 기준 일시 표기("10월 31일(토) 오후 1:30" 형식), 비용 천 단위 구분("30,000원"), 종류 라벨(스크린/필드) — `tests/unit/domain/format.test.ts`
+- [X] T041 [P] [US2] pgTAP: approved 사용자는 `rounds`·`notices` SELECT 가능, pending/rejected/anon은 0건 또는 거부; `rounds` INSERT/UPDATE/DELETE는 모든 역할 거부 — `supabase/tests/30_read_policies.sql`
+- [X] T042 [P] [US2] 컴포넌트 테스트: `NextRoundCard`(종류·일시·장소·비용 표시, null이면 "예정된 라운딩이 없습니다"), `NoticeCard`(제목·요약 표시, 클릭 시 상세 링크, null이면 "등록된 공지가 없습니다"), 데이터 로드 실패 시 오류 문구와 "다시 시도" 버튼 — `tests/unit/components/home-cards.test.tsx`
+- [X] T043 [US2] Playwright E2E(360px 뷰포트): 시드 데이터로 홈에 두 카드 표시, 데이터 없을 때 빈 상태, `document.documentElement.scrollWidth <= 360`(가로 스크롤 없음) — `tests/e2e/home.spec.ts`
 
 ### Implementation for User Story 2
 
-- [ ] T044 [P] [US2] `src/domain/next-round.ts` 구현(T038 통과)
-- [ ] T045 [P] [US2] `src/domain/notice-summary.ts` 구현(T039 통과)
-- [ ] T046 [P] [US2] `src/domain/format.ts` 구현(T040 통과, 시간대 `Asia/Seoul`)
-- [ ] T047 [US2] rounds·notices SELECT RLS 정책(approved만) 마이그레이션(T041 통과) — `supabase/migrations/0005_read_policies.sql`
-- [ ] T048 [P] [US2] 개발/E2E용 시드 데이터(미래 라운딩 2건, 과거 1건, 공지 2건) — `supabase/seed.sql`
-- [ ] T049 [P] [US2] `NextRoundCard`, `NoticeCard`, 오류 재시도 컴포넌트(T042 통과) — `src/components/NextRoundCard.tsx`, `src/components/NoticeCard.tsx`, `src/components/ErrorRetry.tsx`
-- [ ] T050 [US2] 홈 페이지: 서버에서 rounds(미래 후보)와 최신 공지 1건 조회 후 `next-round`로 선택해 카드 렌더링 — `src/app/(member)/page.tsx`
-- [ ] T051 [US2] 공지 상세 페이지(전문 표시, 존재하지 않는 id는 404) — `src/app/(member)/notices/[id]/page.tsx`
-- [ ] T052 [US2] T038–T043 통과 확인
+- [X] T044 [P] [US2] `src/domain/next-round.ts` 구현(T038 통과)
+- [X] T045 [P] [US2] `src/domain/notice-summary.ts` 구현(T039 통과)
+- [X] T046 [P] [US2] `src/domain/format.ts` 구현(T040 통과, 시간대 `Asia/Seoul`)
+- [X] T047 [US2] rounds·notices SELECT RLS 정책(approved만) 마이그레이션(T041 통과) — `supabase/migrations/0005_read_policies.sql`
+- [X] T048 [P] [US2] 개발/E2E용 시드 데이터(미래 라운딩 2건, 과거 1건, 공지 2건) — `supabase/seed.sql`
+- [X] T049 [P] [US2] `NextRoundCard`, `NoticeCard`, 오류 재시도 컴포넌트(T042 통과) — `src/components/NextRoundCard.tsx`, `src/components/NoticeCard.tsx`, `src/components/ErrorRetry.tsx`
+- [X] T050 [US2] 홈 페이지: 서버에서 rounds(미래 후보)와 최신 공지 1건 조회 후 `next-round`로 선택해 카드 렌더링 — `src/app/(member)/page.tsx`
+- [X] T051 [US2] 공지 상세 페이지(전문 표시, 존재하지 않는 id는 404) — `src/app/(member)/notices/[id]/page.tsx`
+- [X] T052 [US2] T038–T043 통과 확인
 
 **Checkpoint**: 핵심 가치(홈 대시보드) 완성
 
