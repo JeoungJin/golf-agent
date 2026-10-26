@@ -1,7 +1,10 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { DeleteNoticeButton } from "@/components/DeleteNoticeButton";
+import { getCurrentMember } from "@/lib/members";
 import { fetchNotice } from "@/lib/queries";
 import { createClient } from "@/lib/supabase/server";
+import { deleteNotice } from "../actions";
 
 export const dynamic = "force-dynamic";
 
@@ -15,14 +18,26 @@ const dateFormat = new Intl.DateTimeFormat("ko-KR", {
 export default async function NoticeDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const supabase = await createClient();
-  const notice = await fetchNotice(supabase, id);
+  const [notice, member] = await Promise.all([fetchNotice(supabase, id), getCurrentMember()]);
   if (!notice) notFound();
+
+  const isManager = member?.role === "manager";
 
   return (
     <main className="space-y-3 py-2">
-      <Link href="/" className="text-sm text-neutral-500">
-        ← 홈
-      </Link>
+      <div className="flex items-center justify-between">
+        <Link href="/" className="text-sm text-neutral-500">
+          ← 홈
+        </Link>
+        {isManager && (
+          <div className="flex items-center gap-4">
+            <Link href={`/notices/${notice.id}/edit`} className="text-sm font-medium text-green-700">
+              수정
+            </Link>
+            <DeleteNoticeButton onDelete={deleteNotice.bind(null, notice.id)} />
+          </div>
+        )}
+      </div>
       <h1 className="break-words text-xl font-bold">{notice.title}</h1>
       <p className="text-xs text-neutral-500">{dateFormat.format(new Date(notice.createdAt))}</p>
       <p className="whitespace-pre-wrap break-words">{notice.body}</p>

@@ -107,3 +107,9 @@ export async function seedNotice(input: { authorId: string; title: string; body:
 }
 
 export const daysFromNow = (days: number) => new Date(Date.now() + days * 86_400_000);
+
+/** 가입 승인 흐름을 거치지 않고 서비스 롤로 직접 승인한다 (승인 UI 가 대상이 아닌 테스트용). */
+export async function approveUser(user: TestUser) {
+  const { error } = await admin().from("members").update({ status: "approved" }).eq("id", user.id);
+  if (error) throw error;
+}

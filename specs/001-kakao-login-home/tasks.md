@@ -150,19 +150,19 @@ description: "Task list for 카카오 로그인 · 홈 화면 추가 안내 · �
 
 ### Tests for User Story 3 ⚠️
 
-- [ ] T053 [P] [US3] pgTAP: 매니저는 notices INSERT/UPDATE/DELETE 가능, 멤버·pending·anon은 거부; 빈/공백 제목·본문, 제목 100자 초과, 본문 5000자 초과 거부; 수정 시 `updated_at` 갱신 — `supabase/tests/40_notice_write.sql`
-- [ ] T054 [P] [US3] 공지 입력 검증 단위 테스트: 제목 1..100자·공백만 불가, 본문 1..5000자·공백만 불가, 오류 메시지는 한국어 — `tests/unit/domain/notice-validation.test.ts`
-- [ ] T055 [P] [US3] 공지 폼 컴포넌트 테스트: 빈 값 제출 시 오류 안내 표시 및 제출 안 됨, 유효 값 제출 시 액션 호출 — `tests/unit/components/notice-form.test.tsx`
-- [ ] T056 [US3] Playwright E2E: 매니저가 공지 등록 → 멤버 홈에 최신 공지로 표시; 수정·삭제 반영; 멤버에게는 작성/수정/삭제 버튼이 없고 `/notices/new` 직접 접근 시 `/`로 이동 — `tests/e2e/notices.spec.ts`
+- [X] T053 [P] [US3] pgTAP: 매니저는 notices INSERT/UPDATE/DELETE 가능, 멤버·pending·anon은 거부; 빈/공백 제목·본문, 제목 100자 초과, 본문 5000자 초과 거부; 수정 시 `updated_at` 갱신 — `supabase/tests/40_notice_write.sql`
+- [X] T054 [P] [US3] 공지 입력 검증 단위 테스트: 제목 1..100자·공백만 불가, 본문 1..5000자·공백만 불가, 오류 메시지는 한국어 — `tests/unit/domain/notice-validation.test.ts`
+- [X] T055 [P] [US3] 공지 폼 컴포넌트 테스트: 빈 값 제출 시 오류 안내 표시 및 제출 안 됨, 유효 값 제출 시 액션 호출 — `tests/unit/components/notice-form.test.tsx`
+- [X] T056 [US3] Playwright E2E: 매니저가 공지 등록 → 멤버 홈에 최신 공지로 표시; 수정·삭제 반영; 멤버에게는 작성/수정/삭제 버튼이 없고 `/notices/new` 직접 접근 시 `/`로 이동 — `tests/e2e/notices.spec.ts`
 
 ### Implementation for User Story 3
 
-- [ ] T057 [US3] `src/domain/notice-validation.ts` 구현(T054 통과)
-- [ ] T058 [US3] notices 쓰기 RLS 정책(매니저만) 및 `updated_at` 갱신 트리거 마이그레이션(T053 통과) — `supabase/migrations/0006_notice_write.sql`
-- [ ] T059 [US3] 공지 폼 컴포넌트(T055 통과) — `src/components/NoticeForm.tsx`
-- [ ] T060 [US3] 공지 작성·수정 페이지와 server action(등록/수정/삭제, 서버에서도 `notice-validation` 재검증) — `src/app/(member)/notices/new/page.tsx`, `src/app/(member)/notices/[id]/edit/page.tsx`, `src/app/(member)/notices/actions.ts`
-- [ ] T061 [US3] 매니저에게만 홈/상세에 "공지 작성·수정·삭제" 버튼 노출 — `src/components/NoticeCard.tsx`, `src/app/(member)/notices/[id]/page.tsx`
-- [ ] T062 [US3] T053–T056 통과 확인
+- [X] T057 [US3] `src/domain/notice-validation.ts` 구현(T054 통과)
+- [X] T058 [US3] notices 쓰기 RLS 정책(매니저만) 및 `updated_at` 갱신 트리거 마이그레이션(T053 통과) — `supabase/migrations/0006_notice_write.sql`
+- [X] T059 [US3] 공지 폼 컴포넌트(T055 통과) — `src/components/NoticeForm.tsx`
+- [X] T060 [US3] 공지 작성·수정 페이지와 server action(등록/수정/삭제, 서버에서도 `notice-validation` 재검증) — `src/app/(member)/notices/new/page.tsx`, `src/app/(member)/notices/[id]/edit/page.tsx`, `src/app/(member)/notices/actions.ts`
+- [X] T061 [US3] 매니저에게만 홈/상세에 "공지 작성·수정·삭제" 버튼 노출 — `src/components/NoticeCard.tsx`, `src/app/(member)/notices/[id]/page.tsx`
+- [X] T062 [US3] T053–T056 통과 확인
 
 **Checkpoint**: 공지 운영 가능
 
