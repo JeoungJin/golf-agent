@@ -15,10 +15,13 @@ describe("RoundForm", () => {
   it("빈 값으로 제출하면 항목별 오류를 보여 주고 onSubmit 을 호출하지 않는다", async () => {
     const onSubmit = vi.fn();
     render(<RoundForm submitLabel="등록" onSubmit={onSubmit} />);
+    expect(screen.getByLabelText("스크린")).toBeChecked();
+    expect(screen.getByLabelText("필드")).not.toBeChecked();
 
     await userEvent.click(screen.getByRole("button", { name: "등록" }));
 
-    expect(screen.getByText("종류를 선택해 주세요")).toBeInTheDocument();
+    expect(screen.queryByText("종류를 선택해 주세요")).not.toBeInTheDocument();
+    expect(screen.getByText("티오프 일시를 입력해 주세요")).toBeInTheDocument();
     expect(screen.getByText("티오프 일시를 입력해 주세요")).toBeInTheDocument();
     expect(screen.getByText("장소를 입력해 주세요")).toBeInTheDocument();
     expect(onSubmit).not.toHaveBeenCalled();

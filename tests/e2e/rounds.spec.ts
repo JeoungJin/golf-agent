@@ -60,7 +60,7 @@ test.describe("라운딩 등록 (US1)", () => {
 
     await page.goto("/rounds/new");
     await page.getByRole("button", { name: "등록" }).click();
-    await expect(page.getByText("종류를 선택해 주세요")).toBeVisible();
+    await expect(page.getByLabel("스크린")).toBeChecked();
     await expect(page.getByText("티오프 일시를 입력해 주세요")).toBeVisible();
     await expect(page.getByText("장소를 입력해 주세요")).toBeVisible();
 
@@ -164,8 +164,44 @@ test.describe("라운딩 목록·상세 (US2)", () => {
     await expect(page.getByText("스크린 장소 A")).toBeVisible();
     await expect(page.getByText("필드 장소 B")).toHaveCount(0);
 
-    await page.getByRole("link", { name: "전체", exact: true }).click();
-    await expect(page.getByRole("listitem")).toHaveCount(4);
+  });
+
+  test("필드 목록에서 등록을 누르면 종류가 필드로 초기 선택된다", async ({ page, context }) => {
+    const manager = await createTestUser("매니저");
+    await signInAs(context, manager);
+
+    await page.goto("/rounds?kind=field");
+    await page.getByRole("link", { name: "라운딩 등록" }).click();
+    await expect(page.getByLabel("필드")).toBeChecked();
+  });
+
+  test("매니저는 라운딩을 수정·취소·삭제할 수 있고 멤버에게는 수단이 없다", async ({ page, context, browser }) => {
+    const manager = await createTestUser("매니저");
+    const member = await createApprovedMember("멤버");
+    const id = await seedRound({ startsAt: daysFromNow(3), location: "원래 장소" });
+
+    const memberCtx = await browser.newContext();
+    await signInAs(memberCtx, member);
+    const memberPage = await memberCtx.newPage();
+    await memberPage.goto(`/rounds/${id}`);
+    await expect(memberPage.getByRole("link", { name: "수정" })).toHaveCount(0);
+    await expect(memberPage.getByRole("button", { name: "삭제" })).toHaveCount(0);
+    await memberCtx.close();
+
+    await signInAs(context, manager);
+    page.on("dialog", (d) => d.accept());
+    await page.goto(`/rounds/${id}`);
+    await page.getByRole("link", { name: "수정" }).click();
+    await page.getByLabel("장소").fill("바뀐 장소");
+    await page.getByRole("button", { name: "저장" }).click();
+    await expect(page.getByRole("heading", { name: "바뀐 장소" })).toBeVisible();
+
+    await page.getByRole("button", { name: "취소", exact: true }).click();
+    await expect(page.getByText("취소됨")).toBeVisible();
+
+    await page.getByRole("button", { name: "삭제" }).click();
+    await expect(page).toHaveURL(/\/rounds\?kind=screen$/);
+    await expect(page.getByText("바뀐 장소")).toHaveCount(0);
   });
 
   test("해당 종류의 라운딩이 없으면 종류별 빈 상태 안내가 보인다", async ({ page, context }) => {
@@ -182,7 +218,7 @@ test.describe("라운딩 목록·상세 (US2)", () => {
     await signInAs(context, manager);
 
     await page.goto("/rounds");
-    await expect(page.getByText("등록된 라운딩이 없습니다")).toBeVisible();
+    await expect(page.getByText("등록된 스크린 라운딩이 없습니다")).toBeVisible();
   });
 
   test("목록에서 상세로 이동하면 라운딩 정보가 보인다", async ({ page, context }) => {
@@ -196,7 +232,7 @@ test.describe("라운딩 목록·상세 (US2)", () => {
     });
     await signInAs(context, manager);
 
-    await page.goto("/rounds");
+    await page.goto("/rounds?kind=field");
     await page.getByRole("link", { name: /레이크사이드 CC/ }).click();
 
     await expect(page).toHaveURL(/\/rounds\/[0-9a-f-]{36}$/);
@@ -231,7 +267,7 @@ test.describe("라운딩 목록·상세 (US2)", () => {
     await signInAs(managerCtx, manager);
     const managerPage = await managerCtx.newPage();
     await managerPage.goto("/");
-    await managerPage.getByRole("link", { name: "스크린 목록" }).click();
+    await managerPage.getByRole("link", { name: "스크린", exact: true }).click();
     await expect(managerPage).toHaveURL(/\/rounds\?kind=screen$/);
     await expect(managerPage.getByRole("link", { name: "라운딩 등록" })).toBeVisible();
 

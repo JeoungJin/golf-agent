@@ -1,4 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import type { RosterEntry } from "@/components/VoteRoster";
 import { pickNextRound } from "@/domain/next-round";
 import type { Notice, Round, RoundKind, Vote } from "@/domain/types";
 
@@ -162,4 +163,18 @@ export async function fetchRound(supabase: SupabaseClient, id: string): Promise<
   const { data, error } = await supabase.from("rounds").select(ROUND_COLUMNS).eq("id", id).maybeSingle();
   if (error || !data) return null;
   return toRound(data as RoundRow);
+}
+
+/** 라운딩 투표자 명단(닉네임 포함, 신청 순). 실패하면 null. */
+export async function fetchVoteRoster(
+  supabase: SupabaseClient,
+  roundId: string,
+): Promise<RosterEntry[] | null> {
+  const { data, error } = await supabase.rpc("round_vote_roster", { p_round: roundId });
+  if (error) return null;
+  return (
+    data as { member_id: string; nickname: string; status: Vote["status"]; requested_at: string }[]
+  )
+    .sort((a, b) => new Date(a.requested_at).getTime() - new Date(b.requested_at).getTime())
+    .map((r) => ({ memberId: r.member_id, nickname: r.nickname, status: r.status }));
 }

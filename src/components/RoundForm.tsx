@@ -14,9 +14,9 @@ interface Props {
   onSubmit: (value: RoundValue) => void | { error?: string } | Promise<void | { error?: string }>;
 }
 
-const EMPTY: RoundFormInput = { kind: "", startsAt: "", location: "", fee: "0", capacity: "" };
+const EMPTY: RoundFormInput = { kind: "screen", startsAt: "", location: "", fee: "0", capacity: "" };
 
-const inputClass = "w-full rounded-lg border border-neutral-300 px-3 py-2";
+const inputClass = "w-full rounded-lg border border-neutral-300 bg-white px-3 py-2 text-neutral-900";
 const errorClass = "mt-1 text-sm text-red-600";
 
 export function RoundForm({ submitLabel, initial = EMPTY, onSubmit }: Props) {
@@ -51,7 +51,7 @@ export function RoundForm({ submitLabel, initial = EMPTY, onSubmit }: Props) {
   }
 
   return (
-    <form onSubmit={handleSubmit} noValidate className="space-y-4">
+    <form onSubmit={handleSubmit} noValidate className="space-y-4 rounded-2xl border border-green-200 bg-green-50 p-4 dark:border-green-900 dark:bg-green-950">
       <fieldset>
         <legend className="mb-1 text-sm font-medium">종류</legend>
         <div className="flex gap-3">
@@ -63,7 +63,7 @@ export function RoundForm({ submitLabel, initial = EMPTY, onSubmit }: Props) {
           ).map(([value, label]) => (
             <label
               key={value}
-              className="flex flex-1 items-center justify-center gap-2 rounded-lg border border-neutral-300 px-3 py-2"
+              className="flex flex-1 items-center justify-center gap-2 rounded-lg border border-neutral-300 bg-white px-3 py-2 text-neutral-900"
             >
               <input
                 type="radio"

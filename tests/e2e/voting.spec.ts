@@ -37,6 +37,7 @@ test("정원 2: 참석 2명 확정, 세 번째는 대기, 참석자가 불참하
   await expect(pageA.page.getByText("아직 투표하지 않았습니다")).toBeVisible();
   await pageA.page.getByRole("button", { name: "참석", exact: true }).click();
   await expect(pageA.page.getByText("참석 확정")).toBeVisible();
+  await expect(pageA.page.getByRole("region", { name: "투표 현황" }).getByText("멤버A")).toBeVisible();
 
   const pageB = await openAs(browser, b, path);
   await pageB.page.getByRole("button", { name: "참석", exact: true }).click();

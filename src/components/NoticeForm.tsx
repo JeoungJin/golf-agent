@@ -39,7 +39,7 @@ export function NoticeForm({ submitLabel, initial, onSubmit }: Props) {
   }
 
   return (
-    <form onSubmit={handleSubmit} noValidate className="space-y-4">
+    <form onSubmit={handleSubmit} noValidate className="space-y-4 rounded-2xl border border-green-200 bg-green-50 p-4 dark:border-green-900 dark:bg-green-950">
       <div>
         <label htmlFor="notice-title" className="mb-1 block text-sm font-medium">
           제목
@@ -48,7 +48,7 @@ export function NoticeForm({ submitLabel, initial, onSubmit }: Props) {
           id="notice-title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className="w-full rounded-lg border border-neutral-300 px-3 py-2"
+          className="w-full rounded-lg border border-neutral-300 bg-white px-3 py-2 text-neutral-900"
         />
         {errors.title && <p className="mt-1 text-sm text-red-600">{errors.title}</p>}
       </div>
@@ -61,7 +61,7 @@ export function NoticeForm({ submitLabel, initial, onSubmit }: Props) {
           rows={8}
           value={body}
           onChange={(e) => setBody(e.target.value)}
-          className="w-full rounded-lg border border-neutral-300 px-3 py-2"
+          className="w-full rounded-lg border border-neutral-300 bg-white px-3 py-2 text-neutral-900"
         />
         {errors.body && <p className="mt-1 text-sm text-red-600">{errors.body}</p>}
       </div>

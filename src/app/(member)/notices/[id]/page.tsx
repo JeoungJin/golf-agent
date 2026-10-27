@@ -26,8 +26,8 @@ export default async function NoticeDetailPage({ params }: { params: Promise<{ i
   return (
     <main className="space-y-3 py-2">
       <div className="flex items-center justify-between">
-        <Link href="/" className="text-sm text-neutral-500">
-          ← 홈
+        <Link href="/notices" className="text-sm text-neutral-500">
+          ← 공지사항
         </Link>
         {isManager && (
           <div className="flex items-center gap-4">
@@ -38,9 +38,11 @@ export default async function NoticeDetailPage({ params }: { params: Promise<{ i
           </div>
         )}
       </div>
-      <h1 className="break-words text-xl font-bold">{notice.title}</h1>
-      <p className="text-xs text-neutral-500">{dateFormat.format(new Date(notice.createdAt))}</p>
-      <p className="whitespace-pre-wrap break-words">{notice.body}</p>
+      <article className="space-y-3 rounded-2xl border border-sky-200 bg-sky-50 p-4 dark:border-sky-900 dark:bg-sky-950">
+        <h1 className="break-words text-xl font-bold">{notice.title}</h1>
+        <p className="text-xs text-neutral-500">{dateFormat.format(new Date(notice.createdAt))}</p>
+        <p className="whitespace-pre-wrap break-words">{notice.body}</p>
+      </article>
     </main>
   );
 }
