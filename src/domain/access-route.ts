@@ -8,6 +8,8 @@ export interface AccessInput {
   session: boolean;
   status?: MemberStatus;
   role?: MemberRole;
+  /** 이름(닉네임) 설정 여부. false 이면 이름 입력 화면으로 보낸다. */
+  nicknameSet?: boolean;
   path: string;
 }
 
@@ -28,7 +30,7 @@ function isManagerOnly(path: string): boolean {
 }
 
 /** 세션·가입 상태·역할·요청 경로로 접근 허용 여부 또는 이동할 경로를 결정한다. */
-export function resolveAccess({ session, status, role, path }: AccessInput): AccessDecision {
+export function resolveAccess({ session, status, role, nicknameSet, path }: AccessInput): AccessDecision {
   const isAuthPath = path === "/auth" || path.startsWith("/auth/");
 
   if (!session) {
@@ -38,8 +40,12 @@ export function resolveAccess({ session, status, role, path }: AccessInput): Acc
   // OAuth 콜백은 로그인 직후 세션 교환을 위해 항상 통과시킨다.
   if (isAuthPath) return ALLOW;
 
-  if (status === "pending") return path === "/pending" ? ALLOW : redirect("/pending");
   if (status === "rejected") return path === "/rejected" ? ALLOW : redirect("/rejected");
+
+  // 이름이 없는 회원(승인 대기 포함)은 이름을 입력하기 전에는 다른 화면에 갈 수 없다.
+  if (nicknameSet === false) return path === "/profile" ? ALLOW : redirect("/profile");
+
+  if (status === "pending") return path === "/pending" || path === "/profile" ? ALLOW : redirect("/pending");
 
   if (STATUS_PAGES.includes(path)) return redirect("/");
   if (isManagerOnly(path) && role !== "manager") return redirect("/");

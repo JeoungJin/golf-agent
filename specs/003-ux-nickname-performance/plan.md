@@ -45,7 +45,7 @@ US1~US3(상단 고정 메뉴, 목록 구분, 바탕색, 종류 초기값)은 구
 - **데이터**: `members.nickname_set boolean not null default false`.
   - 트리거 `handle_new_user`: 카카오 메타데이터(`name`/`nickname`/`preferred_username`)에서 값을 얻으면 `true`, 기본값 `'회원'`을 쓰면 `false`.
   - 마이그레이션 백필: 기존 행 중 `nickname <> '회원'`이면 `true`, 아니면 `false`(FR-014).
-- **RPC `set_my_nickname(p_nickname text) → void`**: `auth.uid()` 본인 행만 갱신. 앞뒤 공백 제거 후 1~20자 검증(`invalid_input`). 거절(`rejected`) 회원은 `forbidden`. 승인 대기·승인 회원은 허용. `nickname_set = true`로 함께 갱신. `execute`는 `authenticated`에게만.
+- **RPC `set_my_nickname(p_nickname text) → member_status`**: `auth.uid()` 본인 행만 갱신. 앞뒤 공백 제거 후 1~20자 검증(`invalid_input`). 거절(`rejected`) 회원은 `forbidden`. 호출자의 가입 상태를 돌려줘 앱이 승인 대기 화면 또는 홈으로 바로 이동한다(미들웨어 리다이렉트는 서버 액션 이동에서 주소가 `/`로 남는 문제가 있어 직접 이동). 승인 대기·승인 회원은 허용. `nickname_set = true`로 함께 갱신. `execute`는 `authenticated`에게만.
 - **접근 규칙**: 미들웨어가 가져오는 회원 행에 `nickname_set`을 포함하고, `resolveAccess`를 확장한다 — 로그인했고 거절이 아니며 `nickname_set = false`이면 `/profile` 외 모든 경로를 `/profile`로 보낸다. 로그아웃(클라이언트 동작)과 `/auth/*`, 정적 자원은 제외.
 - **화면**: `/profile`(이름 입력·수정 겸용). 미설정이면 "사용할 이름을 입력해 주세요" 안내, 설정됨이면 현재 값이 채워진 수정 폼. 저장 성공 시 기본 `redirect('/')`(미들웨어가 승인 상태에 맞게 분기). 헤더의 이름이 `/profile` 링크.
 - **서버 액션** `updateNickname(value)`: 도메인 `validateNickname`으로 재검증 → RPC. 오류 코드는 한국어 문구로 변환(002 `round-errors`와 같은 방식).

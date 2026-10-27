@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { isRedirectError } from "@/lib/redirect-error";
 import {
   validateRound,
   type RoundErrors,
@@ -43,8 +44,9 @@ export function RoundForm({ submitLabel, initial = EMPTY, onSubmit }: Props) {
     try {
       const response = await onSubmit(result.value);
       if (response && response.error) setServerError(response.error);
-    } catch {
-      setServerError("저장하지 못했습니다. 잠시 후 다시 시도해 주세요.");
+    } catch (e) {
+      // 저장 후 이동(redirect)은 예외로 전달되므로 오류 안내를 띄우지 않는다.
+      if (!isRedirectError(e)) setServerError("저장하지 못했습니다. 잠시 후 다시 시도해 주세요.");
     } finally {
       setSubmitting(false);
     }

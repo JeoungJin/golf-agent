@@ -2,7 +2,7 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 /**
- * 요청의 Supabase 세션을 갱신하고, 갱신된 쿠키가 담긴 응답과 현재 사용자를 돌려준다.
+ * 요청의 Supabase 세션을 갱신하고, 갱신된 쿠키가 담긴 응답과 현재 사용자(id)를 돌려준다.
  */
 export async function updateSession(request: NextRequest) {
   let response = NextResponse.next({ request });
@@ -26,10 +26,10 @@ export async function updateSession(request: NextRequest) {
     },
   );
 
-  // getUser()는 토큰을 서버에서 검증한다. getSession()만으로 판단하지 말 것.
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  // getClaims()는 JWT 서명을 공개키(JWKS)로 로컬에서 검증하므로 인증 서버 왕복이 없다.
+  // (만료된 토큰은 갱신을 위해 서버를 호출한다.) getSession()만으로 판단하지 말 것.
+  const { data } = await supabase.auth.getClaims();
+  const user = data?.claims?.sub ? { id: data.claims.sub } : null;
 
   return { response, supabase, user };
 }

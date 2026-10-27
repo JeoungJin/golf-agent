@@ -18,10 +18,10 @@ values ('00000000-0000-0000-0000-00000000aa01', '00000000-0000-0000-0000-0000000
 select tests.authenticate_as('00000000-0000-0000-0000-0000000000d2');
 select throws_ok(
   $$select public.delete_round('00000000-0000-0000-0000-00000000aa01')$$,
-  'forbidden', null, '멤버는 삭제할 수 없다');
+  '42501', 'forbidden', '멤버는 삭제할 수 없다');
 select throws_ok(
   $$select public.set_round_cancelled('00000000-0000-0000-0000-00000000aa01', true)$$,
-  'forbidden', null, '멤버는 취소할 수 없다');
+  '42501', 'forbidden', '멤버는 취소할 수 없다');
 
 -- 매니저
 select tests.authenticate_as('00000000-0000-0000-0000-0000000000d1');
@@ -41,7 +41,7 @@ select is(
 select throws_ok(
   $$select public.update_round('00000000-0000-0000-0000-00000000aa02', 'screen',
       now() + interval '1 day', 'x', 0, null)$$,
-  'round_closed', null, '이미 시작한 라운딩은 수정할 수 없다');
+  'P0001', 'round_closed', '이미 시작한 라운딩은 수정할 수 없다');
 select lives_ok(
   $$select public.set_round_cancelled('00000000-0000-0000-0000-00000000aa01', true)$$,
   '취소할 수 있다');

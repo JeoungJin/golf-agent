@@ -16,8 +16,10 @@ export function Header({ nickname, isManager = false }: { nickname: string; isMa
           >
             {initial}
           </span>
-          <span className="truncate font-semibold">{nickname}</span>
-          <span className="shrink-0 text-xs text-neutral-500">님</span>
+          <Link href="/profile" title="내 정보 수정" className="flex min-w-0 items-baseline gap-1">
+            <span className="truncate font-semibold">{nickname}</span>
+            <span className="shrink-0 text-xs text-neutral-500">님</span>
+          </Link>
           {isManager && (
             <span className="shrink-0 rounded-full bg-green-100 px-1.5 py-px text-xs font-medium text-green-800">
               매니저

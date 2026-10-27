@@ -83,4 +83,52 @@ describe("resolveAccess", () => {
       expect(resolveAccess({ ...member, path: "/notices/abc" })).toEqual(allow);
     });
   });
+  describe("이름 미설정 회원", () => {
+    it("승인 대기·승인 회원은 /profile 외 모든 경로에서 /profile 로 보낸다", () => {
+      for (const status of ["pending", "approved"] as const) {
+        for (const path of ["/", "/pending", "/notices", "/rounds", "/admin/members", "/login"]) {
+          expect(
+            resolveAccess({ session: true, status, role: "member", nicknameSet: false, path }),
+          ).toEqual(to("/profile"));
+        }
+      }
+    });
+
+    it("/profile 과 /auth/* 는 허용한다", () => {
+      for (const status of ["pending", "approved"] as const) {
+        const base = { session: true, status, role: "member", nicknameSet: false } as const;
+        expect(resolveAccess({ ...base, path: "/profile" })).toEqual(allow);
+        expect(resolveAccess({ ...base, path: "/auth/callback" })).toEqual(allow);
+      }
+    });
+
+    it("거절된 회원은 이름 미설정이어도 기존 규칙(/rejected)을 따른다", () => {
+      const base = { session: true, status: "rejected", role: "member", nicknameSet: false } as const;
+      expect(resolveAccess({ ...base, path: "/profile" })).toEqual(to("/rejected"));
+      expect(resolveAccess({ ...base, path: "/rejected" })).toEqual(allow);
+    });
+
+    it("비로그인은 영향받지 않는다", () => {
+      expect(resolveAccess({ session: false, path: "/profile" })).toEqual(to("/login"));
+    });
+  });
+
+  describe("이름 설정 완료 회원의 /profile", () => {
+    it("승인 대기 회원은 /profile 과 /pending 만 허용한다", () => {
+      const base = { session: true, status: "pending", role: "member", nicknameSet: true } as const;
+      expect(resolveAccess({ ...base, path: "/profile" })).toEqual(allow);
+      expect(resolveAccess({ ...base, path: "/pending" })).toEqual(allow);
+      expect(resolveAccess({ ...base, path: "/notices" })).toEqual(to("/pending"));
+    });
+
+    it("승인된 회원은 /profile 을 허용한다", () => {
+      const base = { session: true, status: "approved", role: "member", nicknameSet: true } as const;
+      expect(resolveAccess({ ...base, path: "/profile" })).toEqual(allow);
+    });
+
+    it("거절된 회원은 /profile 을 쓸 수 없다", () => {
+      const base = { session: true, status: "rejected", role: "member", nicknameSet: true } as const;
+      expect(resolveAccess({ ...base, path: "/profile" })).toEqual(to("/rejected"));
+    });
+  });
 });
