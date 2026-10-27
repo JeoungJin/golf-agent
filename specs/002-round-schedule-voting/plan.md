@@ -10,7 +10,7 @@
 정원이 가득 차면 참석 신청은 대기가 되고 빈자리가 생기면 대기 순서대로 자동 승격된다. 마감은 티오프 시각이다.
 정원·대기·마감 규칙과 동시성은 Postgres RPC(행 잠금 + 단일 트랜잭션)에서 강제하고, 화면용 판단 로직
 (입력 검증, KST 변환, 인원 집계, 다음 라운딩 선택, 경로 접근)은 순수 함수로 분리해 Vitest로 TDD 한다.
-홈의 "다음 라운딩" 카드는 기존 선정 규칙을 유지하면서 취소된 라운딩을 제외하고 참석 현황과 내 상태를 더한다.
+홈 "다음 라운딩" 카드는 개정(2026-10-27)으로 폐기되었다. 화면 구조는 003 참고.
 조사 결과는 [research.md](./research.md) 참고.
 
 ## Technical Context
@@ -19,7 +19,7 @@
 
 **Primary Dependencies**: Next.js 15 (App Router, Server Actions), React 19, `@supabase/supabase-js`, `@supabase/ssr`, Tailwind CSS — 신규 의존성 없음
 
-**Storage**: Supabase Postgres — `rounds` 확장(capacity, status, updated_at), `round_votes` 신규, RPC 7개(`create_round`, `update_round`, `cancel_round`, `cast_vote`, `withdraw_vote`, `round_roster`, 내부용 `promote_waitlist`)
+**Storage**: Supabase Postgres — `rounds` 확장(capacity, status, updated_at), `round_votes` 신규, RPC 7개(`create_round`, `update_round`, `set_round_cancelled`, `delete_round`, `cast_vote`, `withdraw_vote`, `round_vote_roster`) + 내부 함수 `promote_waitlist`
 
 **Testing**: Vitest + RTL(도메인/컴포넌트), pgTAP `supabase test db`(RPC·RLS·승격·권한), Playwright(E2E 360px + 동시 투표 API 테스트)
 
@@ -31,7 +31,7 @@
 
 **Constraints**: Vercel Hobby + Supabase Free 한도 내(신규 서비스 없음); 개인정보 추가 수집 없음(명단은 기존 닉네임); 한국어 UI; 쓰기는 RPC로만
 
-**Scale/Scope**: 회원 수십 명, 신규 화면 4개(목록, 상세, 등록, 수정) + 홈 카드 확장
+**Scale/Scope**: 회원 수십 명, 신규 화면 4개(목록, 상세, 등록, 수정)
 
 ## Constitution Check
 
@@ -43,7 +43,7 @@
 | II. 순수 도메인 분리 | PASS | `validateRound`, `parseKstDateTime`, `summarizeVotes`, `canVote`, `pickNextRound`(수정), `access-route`(수정)를 `src/domain/`에 두고 100% 커버리지 유지 |
 | III. 무료 티어 | PASS | 신규 서비스 없음, 테이블 1개 추가(research.md 8) |
 | IV. 모바일 PWA | PASS | 모바일 우선 레이아웃, 360/414px E2E 가로 스크롤 검사 확대 |
-| V. 카카오/최소 수집 | PASS | 새 개인정보 없음. 명단은 기존 닉네임만, `round_roster` RPC가 필요한 열만 반환 |
+| V. 카카오/최소 수집 | PASS | 새 개인정보 없음. 명단은 기존 닉네임만, `round_vote_roster` RPC가 필요한 열만 반환 |
 | VI. RLS/단순함 | PASS (정당화 있음) | 쓰기를 RPC로만 허용하고 pgTAP로 검증. RPC 7개는 정원 동시성과 승격을 DB에서 보장하기 위해 필요(research.md 1·3). 외부 상태관리·ORM·실시간 구독 미도입 |
 
 **Post-design 재확인**: 위반 없음.
@@ -69,17 +69,17 @@ specs/002-round-schedule-voting/
 ```text
 src/
 ├── app/(member)/
-│   ├── page.tsx                      # 홈: 카드에 참석 현황·내 상태·링크 (수정)
+│   ├── page.tsx                      # 홈: /notices 로 이동 (003)
 │   └── rounds/
 │       ├── page.tsx                  # 목록
 │       ├── actions.ts                # createRound/updateRound/cancelRound/castVote/withdrawVote
 │       ├── new/page.tsx
 │       └── [id]/{page.tsx, edit/page.tsx}
-├── components/                       # RoundForm, RoundListItem, VotePanel, RosterList, CancelRoundButton, NextRoundCard(수정)
+├── components/                       # RoundForm, RoundListItem, VotePanel, VoteRoster, RoundManageButtons
 ├── domain/
 │   ├── round-validation.ts           # validateRound, parseKstDateTime (신규)
 │   ├── vote-summary.ts               # summarizeVotes, canVote (신규)
-│   ├── next-round.ts                 # 취소 제외 (수정)
+│   ├── next-round.ts                 # 폐기 대상 (홈 카드 폐기, T059)
 │   ├── access-route.ts               # /rounds/new, /rounds/*/edit 매니저 전용 (수정)
 │   ├── format.ts                     # 참석 인원 표기 등 (수정)
 │   └── types.ts                      # Round 확장, Vote 타입 (수정)

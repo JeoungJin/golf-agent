@@ -8,9 +8,9 @@
 | `/rounds/[id]` | 상세: 종류·일시·장소·비용·정원, 참석/대기/불참 명단과 인원수, 내 투표 상태와 투표 버튼(참석/불참/철회). 매니저에게는 시작 전·미취소일 때 "수정"·"취소" | 승인된 회원 |
 | `/rounds/new` | 등록 폼 | 매니저 |
 | `/rounds/[id]/edit` | 수정 폼(시작 전·미취소만) | 매니저 |
-| `/` (홈) | 다음 라운딩 카드: 참석 인원("N/정원"), 대기 인원, 내 투표 상태. 카드를 누르면 `/rounds/[id]` | 승인된 회원 |
+| `/` (홈) | `/notices`로 이동 (003) | 승인된 회원 |
 
-헤더 또는 홈에 "라운딩" 링크(`/rounds`)를 제공한다. 존재하지 않는 id는 404.
+상단 고정 메뉴(003)에서 스크린/필드 탭으로 `/rounds?kind=…`에 이동한다. 존재하지 않는 id는 404.
 
 ## 서버 액션 (`src/app/(member)/rounds/actions.ts`)
 
@@ -18,7 +18,8 @@
 |------|------|------|
 | `createRound(input)` | 서버에서 `validateRound` 재검증 → `create_round` RPC | 성공 시 `/rounds/[id]`로 이동, 실패 시 `{ error }` |
 | `updateRound(id, input)` | 재검증 → `update_round` | 성공 시 상세로 이동 |
-| `cancelRound(id)` | `cancel_round` | 성공 시 상세 갱신 |
+| `setRoundCancelled(id, cancelled)` | `set_round_cancelled` | 성공 시 상세 갱신 |
+| `deleteRound(id, kind)` | `delete_round` | 성공 시 해당 종류 목록으로 이동 |
 | `castVote(roundId, choice)` | `cast_vote` | 새 상태 반환, 경로 revalidate (`/`, `/rounds`, `/rounds/[id]`) |
 | `withdrawVote(roundId)` | `withdraw_vote` | 동일 |
 

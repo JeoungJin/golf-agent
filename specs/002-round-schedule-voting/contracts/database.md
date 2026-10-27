@@ -24,8 +24,12 @@
 - 입력 검증과 `p_starts_at > now()`는 create와 동일. 기존 투표는 건드리지 않는다.
 - 갱신 후 대기 승격(`promote_waitlist`)을 실행한다(정원 증가·제한 해제 대응). 정원이 줄어도 `attending` 행은 변경하지 않는다.
 
-### `cancel_round(p_id uuid) → void`
-- 매니저만. 잠금 후 `scheduled`이고 `now() < starts_at`일 때만 `cancelled`로 전환. 이미 취소됨 → `round_cancelled`, 시작함 → `round_closed`. 투표 행은 보존한다.
+### `set_round_cancelled(p_id uuid, p_cancelled boolean) → void`
+- 매니저만. `true`면 `cancelled`, `false`면 `scheduled`로 전환. 투표 행은 보존한다. 라운딩이 없으면 `round_not_found`.
+- **계약**: 시작 전(`now() < starts_at`)에만 전환할 수 있어야 한다(`round_closed`). ※ 현 구현은 이 검사가 없다 → T058.
+
+### `delete_round(p_id uuid) → void`
+- 매니저만. 라운딩을 `for update`로 잠근 뒤 `round_votes`의 해당 행과 라운딩을 삭제한다. 없으면 `round_not_found`. 시작 여부와 무관하게 삭제할 수 있다.
 
 ### `cast_vote(p_round uuid, p_choice vote_choice) → vote_status`
 - `vote_choice`는 `attend` / `decline`. 승인된 회원만(`forbidden`). 대상은 항상 `auth.uid()` 본인이다(타인 대상 인자는 없다).
@@ -45,20 +49,19 @@
 
 - **RLS select**: `rounds`, `round_votes`는 `is_approved()`일 때 전체 조회 가능. `anon`은 테이블 권한 없음.
 - **쓰기 권한 회수**: `rounds`, `round_votes`에서 `authenticated`의 INSERT/UPDATE/DELETE를 revoke(기존 `rounds`는 이미 revoke됨, `round_votes`는 신규).
-- `round_roster(p_round uuid) → table(member_id uuid, nickname text, status vote_status, requested_at timestamptz, wait_position integer)`
-  - 승인된 회원만(`forbidden`). `wait_position`은 `waiting` 행에만 값이 있고(`requested_at, member_id` 순 1부터), 그 외 null.
-  - 정렬: `attending` → `waiting`(순번 순) → `declined`, 각 그룹 내 `requested_at` 순.
+- `round_vote_roster(p_round uuid) → table(member_id uuid, nickname text, status vote_status, requested_at timestamptz)`
+  - 승인된 회원만(아니면 빈 결과). 닉네임만 노출한다. 대기 순번은 앱이 `requested_at` 순으로 매긴다(FR-021).
 
 ## 조회 계약 (앱 쿼리)
 
 - 예정 라운딩 목록: `rounds where starts_at > now() order by starts_at, created_at` (취소 포함 — 목록에는 "취소됨"으로 표시)
 - 지난 라운딩: `rounds where starts_at <= now() order by starts_at desc limit 10`
-- 다음 라운딩(홈): 예정 라운딩 중 `status = 'scheduled'`인 가장 가까운 1건. 순수 함수 `pickNextRound`가 취소를 제외한다.
+- (폐기) 다음 라운딩(홈): 예정 라운딩 중 `status = 'scheduled'`인 가장 가까운 1건. 순수 함수 `pickNextRound`가 취소를 제외한다.
 - 인원·내 상태: 대상 라운딩들의 `round_votes(round_id, member_id, status, requested_at)`를 조회해 `summarizeVotes`로 집계.
 
 ## pgTAP 검증 항목 (테스트 먼저 작성)
 
-1. 멤버가 `create_round`/`update_round`/`cancel_round` 호출 시 `42501`; 승인 대기·거절 사용자도 동일; `anon`은 execute 거부
+1. 멤버가 `create_round`/`update_round`/`set_round_cancelled`/`delete_round` 호출 시 `42501`; 승인 대기·거절 사용자도 동일; `anon`은 execute 거부
 2. `create_round` 입력 검증: 빈 위치/101자 위치/음수 비용/정원 0/과거 일시 → 각각 오류 코드
 3. `cast_vote`: 정원 없음 → 항상 `attending`; 정원 2 + 3명 순차 참석 → attending, attending, waiting
 4. 참석자가 `decline` 또는 `withdraw_vote` → 가장 이른 대기자가 `attending`으로 승격, 두 번째 대기자는 그대로
@@ -68,6 +71,7 @@
 8. 같은 선택 반복 → 상태·`requested_at` 불변
 9. 티오프 지난 라운딩·취소된 라운딩에서 `cast_vote`/`withdraw_vote` → `round_closed`/`round_cancelled`
 10. 직접 `insert/update/delete`(round_votes, rounds) 거부, 타인 `member_id`를 쓸 방법이 없음 확인(함수 시그니처에 대상 회원 인자 없음)
-11. `round_votes`/`round_roster`는 승인된 회원만 조회 가능, 대기/거절/anon은 0건 또는 `forbidden`
-12. `round_roster` 정렬·`wait_position` 값
+11. `round_votes`/`round_vote_roster`는 승인된 회원만 조회 가능, 대기/거절/anon은 0건 또는 `forbidden`
+12. `round_vote_roster` 닉네임·상태 반환
 13. 취소된 라운딩의 투표 행 보존
+14. `delete_round`: 투표 행도 함께 삭제됨, 멤버는 `42501`

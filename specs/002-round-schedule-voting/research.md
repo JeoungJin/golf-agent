@@ -25,7 +25,7 @@
 
 ## 4. 참석자 닉네임을 어떻게 읽게 할까
 
-- **Decision**: 명단은 RPC `round_roster(round_id)`로 읽는다(승인된 회원만 호출 가능). `members`의 select 정책은 넓히지 않는다.
+- **Decision**: 명단은 RPC `round_vote_roster(p_round)`로 읽는다(승인된 회원만 호출 가능). `members`의 select 정책은 넓히지 않는다.
 - **Rationale**: 현재 `members`는 본인 행과 매니저만 읽을 수 있다. 정책을 "승인된 회원 전체 읽기"로 넓히면 역할·상태까지 노출된다. RPC는 필요한 열(닉네임·투표 상태·신청 시각)만 반환한다.
 - **Alternatives**: members 정책 확장 / 닉네임 비정규화 컬럼을 votes에 복사 — 닉네임 변경 시 불일치 위험이 있어 제외.
 

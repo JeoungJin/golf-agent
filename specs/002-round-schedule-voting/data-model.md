@@ -66,7 +66,7 @@ waiting / declined --철회--> (없음)
 | rounds 쓰기 | 직접 쓰기 거부 | RPC(`create/update/cancel_round`)만 | 거부 |
 | round_votes SELECT | 허용 | 허용 | 거부 |
 | round_votes 쓰기 | RPC(`cast_vote`/`withdraw_vote`) — **본인 투표만** | 동일 | 거부 |
-| 명단(닉네임) | RPC `round_roster` | 동일 | 거부 |
+| 명단(닉네임) | RPC `round_vote_roster` | 동일 | 거부 |
 
 ## 도메인 타입 (src/domain/types.ts 확장)
 

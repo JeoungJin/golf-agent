@@ -4,7 +4,7 @@
 | 컬럼 | 타입 | 설명 |
 |------|------|------|
 | id | uuid PK, FK→auth.users(id) | 카카오 계정과 1:1 |
-| nickname | text not null | 기본값 '회원' |
+| nickname | text not null | 카카오 닉네임, 없으면 기본값 '회원'에서 시작해 회원이 직접 입력(003 US4). `nickname_set`(계획)로 설정 여부 구별 |
 | avatar_url | text null | |
 | role | enum(manager, member) | 기본 member |
 | status | enum(pending, approved, rejected) | 기본 pending |

@@ -124,18 +124,18 @@ description: "Task list for 라운딩 일정 관리 · 참석 투표"
 
 ### Tests for User Story 4 (먼저 작성하고 Red 확인)
 
-- [ ] T036 [P] [US4] pgTAP `round_roster`: 승인된 회원만 호출(대기/거절/anon `forbidden`), 정렬(참석 → 대기 순번 → 불참), `wait_position` 값, 닉네임만 노출 — `supabase/tests/80_roster.sql`
-- [ ] T037 [P] [US4] 단위 테스트 `pickNextRound` 확장: 취소된 라운딩 제외, 가장 가까운 것이 취소면 다음 예정 라운딩 선택(기존 케이스·100% 유지) — `tests/unit/domain/next-round.test.ts`
-- [ ] T038 [P] [US4] 컴포넌트 테스트 `RosterList`(세 구역 명단과 인원 수, 대기 순번, 빈 구역 안내)와 확장된 `NextRoundCard`(참석 인원 "N/정원", 대기 인원, 내 상태, 상세 링크) — `tests/unit/components/roster-list.test.tsx`, `tests/unit/components/home-cards.test.tsx`
-- [ ] T039 [US4] Playwright E2E: 상세 명단 일치, 홈 카드 현황·내 상태·클릭 이동, 취소된 가장 가까운 라운딩 제외 — `tests/e2e/rounds.spec.ts`
+- [ ] T036 [P] [US4] pgTAP `round_roster`: 승인된 회원만 호출(대기/거절/anon `forbidden`), 정렬(참석 → 대기 순번 → 불참), `wait_position` 값, 닉네임만 노출 — `supabase/tests/80_roster.sql` — **미작성 또는 미실행 — 헌법 I 이행 대기**
+- [-] T037 [P] [US4] 단위 테스트 `pickNextRound` 확장: 취소된 라운딩 제외, 가장 가까운 것이 취소면 다음 예정 라운딩 선택(기존 케이스·100% 유지) — `tests/unit/domain/next-round.test.ts` — **폐기: 홈 카드 폐기(FR-017)**
+- [ ] T038 [P] [US4] 컴포넌트 테스트 `RosterList`(세 구역 명단과 인원 수, 대기 순번, 빈 구역 안내)와 확장된 `NextRoundCard`(참석 인원 "N/정원", 대기 인원, 내 상태, 상세 링크) — `tests/unit/components/roster-list.test.tsx`, `tests/unit/components/home-cards.test.tsx` — **미작성 또는 미실행 — 헌법 I 이행 대기**
+- [ ] T039 [US4] Playwright E2E: 상세 명단 일치, 홈 카드 현황·내 상태·클릭 이동, 취소된 가장 가까운 라운딩 제외 — `tests/e2e/rounds.spec.ts` — **미작성 또는 미실행 — 헌법 I 이행 대기**
 
 ### Implementation for User Story 4
 
-- [ ] T040 [US4] 마이그레이션 `round_roster` 함수 — `supabase/migrations/0010_round_roster.sql` (T036 통과)
-- [ ] T041 [P] [US4] `src/domain/next-round.ts` 취소 제외 (T037 통과)
-- [ ] T042 [US4] `RosterList` 컴포넌트와 상세 페이지 연결, `fetchRoster` 쿼리 — `src/components/RosterList.tsx`, `src/lib/queries.ts`, `src/app/(member)/rounds/[id]/page.tsx`
-- [ ] T043 [US4] `NextRoundCard` 확장(참석·대기 인원, 내 상태, 링크)과 `fetchHomeData`가 투표를 함께 조회하도록 수정 — `src/components/NextRoundCard.tsx`, `src/lib/queries.ts`, `src/app/(member)/page.tsx` (T038 통과)
-- [ ] T044 [US4] T036–T039 통과 확인
+- [X] T040 [US4] 마이그레이션 `round_roster` 함수 — `supabase/migrations/0010_round_roster.sql` (T036 통과) — **구현 완료(테스트 후행 — 헌법 I 예외, 실제 이름은 plan/contracts 참고)**
+- [-] T041 [P] [US4] `src/domain/next-round.ts` 취소 제외 (T037 통과) — **폐기: 홈 카드 폐기(FR-017)**
+- [X] T042 [US4] `RosterList` 컴포넌트와 상세 페이지 연결, `fetchRoster` 쿼리 — `src/components/RosterList.tsx`, `src/lib/queries.ts`, `src/app/(member)/rounds/[id]/page.tsx` — **구현 완료(테스트 후행 — 헌법 I 예외, 실제 이름은 plan/contracts 참고)**
+- [-] T043 [US4] `NextRoundCard` 확장(참석·대기 인원, 내 상태, 링크)과 `fetchHomeData`가 투표를 함께 조회하도록 수정 — `src/components/NextRoundCard.tsx`, `src/lib/queries.ts`, `src/app/(member)/page.tsx` (T038 통과) — **폐기: 홈 카드 폐기(FR-017)**
+- [ ] T044 [US4] T036–T039 통과 확인 — **T036·T038·T039 완료 후**
 
 **Checkpoint**: 명단과 홈 카드 완성
 
@@ -149,15 +149,15 @@ description: "Task list for 라운딩 일정 관리 · 참석 투표"
 
 ### Tests for User Story 5 (먼저 작성하고 Red 확인)
 
-- [ ] T045 [P] [US5] pgTAP `update_round`/`cancel_round`: 멤버 `42501`, 지난·취소된 라운딩 거부(`round_closed`/`round_cancelled`), 수정해도 투표 유지, 정원 증가·제한 해제 시 승격, 정원 축소 시 기존 참석자 유지·새 신청은 대기, 취소 시 투표 행 보존, 입력 검증 — `supabase/tests/90_update_cancel.sql`
-- [ ] T046 [P] [US5] 컴포넌트 테스트 `CancelRoundButton`(확인 후 호출, 오류 표시)과 `RoundForm` 수정 모드(초기값, 정원이 참석 인원보다 작을 때 안내 문구) — `tests/unit/components/cancel-round-button.test.tsx`, `tests/unit/components/round-form.test.tsx`
-- [ ] T047 [US5] Playwright E2E: 수정 반영(목록·상세·홈), 정원 변경에 따른 승격, 취소 후 "취소됨"·투표 불가·홈 제외, 지난 라운딩에는 수정·취소 수단 없음, 멤버 직접 접근 시 홈으로 이동 — `tests/e2e/rounds.spec.ts`
+- [ ] T045 [P] [US5] pgTAP `update_round`/`cancel_round`: 멤버 `42501`, 지난·취소된 라운딩 거부(`round_closed`/`round_cancelled`), 수정해도 투표 유지, 정원 증가·제한 해제 시 승격, 정원 축소 시 기존 참석자 유지·새 신청은 대기, 취소 시 투표 행 보존, 입력 검증 — `supabase/tests/90_update_cancel.sql` — **미작성 또는 미실행 — 헌법 I 이행 대기**
+- [ ] T046 [P] [US5] 컴포넌트 테스트 `CancelRoundButton`(확인 후 호출, 오류 표시)과 `RoundForm` 수정 모드(초기값, 정원이 참석 인원보다 작을 때 안내 문구) — `tests/unit/components/cancel-round-button.test.tsx`, `tests/unit/components/round-form.test.tsx` — **미작성 또는 미실행 — 헌법 I 이행 대기**
+- [ ] T047 [US5] Playwright E2E: 수정 반영(목록·상세·홈), 정원 변경에 따른 승격, 취소 후 "취소됨"·투표 불가·홈 제외, 지난 라운딩에는 수정·취소 수단 없음, 멤버 직접 접근 시 홈으로 이동 — `tests/e2e/rounds.spec.ts` — **미작성 또는 미실행 — 헌법 I 이행 대기**
 
 ### Implementation for User Story 5
 
-- [ ] T048 [US5] 마이그레이션 `update_round`, `cancel_round`(수정 후 `promote_waitlist` 호출) — `supabase/migrations/0011_update_cancel_round.sql` (T045 통과)
-- [ ] T049 [US5] 서버 액션 `updateRound`, `cancelRound`, `/rounds/[id]/edit` 페이지, `CancelRoundButton`, 상세의 매니저 전용 "수정"·"취소" (시작 전·미취소일 때만 노출) — `src/app/(member)/rounds/actions.ts`, `src/app/(member)/rounds/[id]/edit/page.tsx`, `src/components/CancelRoundButton.tsx`, `src/components/RoundForm.tsx` (T046 통과)
-- [ ] T050 [US5] T045–T047 통과 확인
+- [X] T048 [US5] 마이그레이션 `update_round`, `cancel_round`(수정 후 `promote_waitlist` 호출) — `supabase/migrations/0011_update_cancel_round.sql` (T045 통과) — **구현 완료(테스트 후행 — 헌법 I 예외, 실제 이름은 plan/contracts 참고)**
+- [X] T049 [US5] 서버 액션 `updateRound`, `cancelRound`, `/rounds/[id]/edit` 페이지, `CancelRoundButton`, 상세의 매니저 전용 "수정"·"취소" (시작 전·미취소일 때만 노출) — `src/app/(member)/rounds/actions.ts`, `src/app/(member)/rounds/[id]/edit/page.tsx`, `src/components/CancelRoundButton.tsx`, `src/components/RoundForm.tsx` (T046 통과) — **구현 완료(테스트 후행 — 헌법 I 예외, 실제 이름은 plan/contracts 참고)**
+- [ ] T050 [US5] T045–T047 통과 확인 — **T045~T047 완료 후**
 
 **Checkpoint**: 모든 사용자 스토리 완료
 
@@ -165,12 +165,14 @@ description: "Task list for 라운딩 일정 관리 · 참석 투표"
 
 ## Phase 7: Polish & Cross-Cutting
 
+> 범례: `[X]` 완료, `[ ]` 미완료, `[~]` 일부 완료, `[-]` 폐기. 2026-10-27 `/speckit-analyze` 결과에 따라 상태를 현실에 맞췄다.
+
 - [ ] T051 [P] `src/domain/` 커버리지 100% 확인 및 미달 파일 보강 (Constitution II)
 - [ ] T052 [P] 360px·414px 가로 스크롤 검사를 새 화면(목록·상세·등록·수정, 긴 장소명·긴 닉네임·많은 참석자)으로 확대 — `tests/e2e/layout.spec.ts`
 - [ ] T053 [P] 네트워크/DB 오류 시 목록·상세·명단의 오류 안내와 재시도 동작 점검 (FR-018)
 - [ ] T054 보안 점검: 새 테이블 RLS 활성, `round_votes`·`rounds` 직접 쓰기 불가, 내부 함수 `promote_waitlist` execute 불가, 클라이언트 번들에 서비스 롤 키 없음 (Constitution V, VI)
 - [ ] T055 `npm run check`, `npx supabase db reset && npm run test:db`, `npm run test:e2e` 전체 통과
-- [ ] T056 운영 반영: `npx supabase db push`로 0007~0011 적용 후 README의 운영 메모(라운딩 직접 입력 안내 삭제) 갱신
+- [~] T056 운영 반영: `npx supabase db push`로 0007~0011 적용 후 README의 운영 메모(라운딩 직접 입력 안내 삭제) 갱신 — **0007~0011을 서울 운영 DB에 적용 완료(2026-10-27). README 운영 메모 갱신은 남음**
 - [ ] T057 quickstart.md 11개 시나리오를 배포 환경 모바일 기기(iOS/Android)에서 수동 검증
 
 ---
@@ -189,3 +191,12 @@ description: "Task list for 라운딩 일정 관리 · 참석 투표"
 2. US2 + US3: 보고 투표하는 핵심 가치 완성. 여기까지가 조편성의 입력 데이터가 된다.
 3. US4·US5: 현황 가시성과 운영 편의.
 4. 각 스토리가 끝날 때마다 세 계층 테스트 결과와 함께 보고하고 승인 후 다음 단계로 진행한다.
+
+---
+
+## Phase 8: 개정 반영 (2026-10-27, `/speckit-analyze`)
+
+- [ ] T058 [US5] 취소/취소 해제에 "시작 전" 검사를 추가(`set_round_cancelled`, 새 마이그레이션)하고, 시작이 지난 라운딩에서는 상세의 수정·취소 버튼을 숨긴다(삭제 버튼은 유지). pgTAP·E2E를 먼저 작성 — `supabase/migrations/`, `src/components/RoundManageButtons.tsx`
+- [ ] T059 [P] 폐기된 홈 카드 코드 정리: `pickNextRound`·`next-round.ts`·`fetchHomeData`와 그 단위 테스트 삭제 — `src/domain/next-round.ts`, `src/lib/queries.ts`, `tests/unit/domain/next-round.test.ts`
+- [ ] T060 [P] 사후 작성된 테스트를 tasks와 연결: `supabase/tests/80_manage_round.sql`(수정·취소·삭제), `tests/e2e/rounds.spec.ts`(수정·취소·삭제, 종류 초기값) — 실행은 T055
+- [ ] T061 [P] `VoteRoster`·`RoundManageButtons` 컴포넌트 테스트 작성
